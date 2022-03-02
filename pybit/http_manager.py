@@ -570,6 +570,21 @@ class FuturesHTTPManager(HTTPManager):
         executor.shutdown()
         return [execution.result() for execution in executions]
 
+    def query_trading_fee_rate(self, **kwargs):
+        """
+        Query trading fee rate.
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/inverse/#t-queryfeerate.
+        :returns: Request results as dictionary.
+        """
+        return self._submit_request(
+            method='GET',
+            path=self.endpoint + '/v2/private/position/fee-rate',
+            query=kwargs,
+            auth=True
+        )
+
     def api_key_info(self):
         """
         Get user's API key info.
