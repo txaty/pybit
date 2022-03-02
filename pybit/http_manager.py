@@ -324,6 +324,19 @@ class HTTPManager:
             else:
                 return s_json
 
+    def api_key_info(self):
+        """
+        Get user's API key info.
+
+        :returns: Request results as dictionary.
+        """
+
+        return self._submit_request(
+            method="GET",
+            path=self.endpoint + "/v2/private/account/api-key",
+            auth=True
+        )
+
 
 class FuturesHTTPManager(HTTPManager):
     def orderbook(self, **kwargs):
@@ -585,19 +598,6 @@ class FuturesHTTPManager(HTTPManager):
             auth=True
         )
 
-    def api_key_info(self):
-        """
-        Get user's API key info.
-
-        :returns: Request results as dictionary.
-        """
-
-        return self._submit_request(
-            method="GET",
-            path=self.endpoint + "/v2/private/account/api-key",
-            auth=True
-        )
-
     def lcp_info(self, **kwargs):
         """
         Get user's LCP (data refreshes once an hour). Only supports inverse
@@ -779,4 +779,3 @@ class InverseFuturesHTTPManager(FuturesHTTPManager):
             path=self.endpoint + suffix,
             query=kwargs
         )
-
