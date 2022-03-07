@@ -1,6 +1,7 @@
 from .http_manager import InverseFuturesHTTPManager
 from .websocket_stream import FuturesWebSocketManager
 from .websocket_stream import INVERSE_PERPETUAL
+from concurrent.futures import ThreadPoolExecutor
 
 
 ws_name = INVERSE_PERPETUAL
@@ -569,6 +570,137 @@ class HTTP(InverseFuturesHTTPManager):
         # Submit a market order against each open position for the same qty.
         return self.place_active_order_bulk(orders)
 
+    def place_active_order_bulk(self, orders: list, max_in_parallel=10):
+        """
+        Places multiple active orders in bulk using multithreading. For more
+        information on place_active_order, see
+        https://bybit-exchange.github.io/docs/inverse/#t-activeorders.
+
+        :param list orders: A list of orders and their parameters.
+        :param max_in_parallel: The number of requests to be sent in parallel.
+            Note that you are limited to 50 requests per second.
+        :returns: Future request result dictionaries as a list.
+        """
+
+        with ThreadPoolExecutor(max_workers=max_in_parallel) as executor:
+            executions = [
+                executor.submit(
+                    self.place_active_order,
+                    **order
+                ) for order in orders
+            ]
+        executor.shutdown()
+        return [execution.result() for execution in executions]
+
+    def cancel_active_order_bulk(self, orders: list, max_in_parallel=10):
+        """
+        Cancels multiple active orders in bulk using multithreading. For more
+        information on cancel_active_order, see
+        https://bybit-exchange.github.io/docs/inverse/#t-activeorders.
+
+        :param list orders: A list of orders and their parameters.
+        :param max_in_parallel: The number of requests to be sent in parallel.
+            Note that you are limited to 50 requests per second.
+        :returns: Future request result dictionaries as a list.
+        """
+
+        with ThreadPoolExecutor(max_workers=max_in_parallel) as executor:
+            executions = [
+                executor.submit(
+                    self.cancel_active_order,
+                    **order
+                ) for order in orders
+            ]
+        executor.shutdown()
+        return [execution.result() for execution in executions]
+
+    def replace_active_order_bulk(self, orders: list, max_in_parallel=10):
+        """
+        Replaces multiple active orders in bulk using multithreading. For more
+        information on replace_active_order, see
+        https://bybit-exchange.github.io/docs/inverse/#t-replaceactive.
+
+        :param list orders: A list of orders and their parameters.
+        :param max_in_parallel: The number of requests to be sent in parallel.
+            Note that you are limited to 50 requests per second.
+        :returns: Future request result dictionaries as a list.
+        """
+
+        with ThreadPoolExecutor(max_workers=max_in_parallel) as executor:
+            executions = [
+                executor.submit(
+                    self.replace_active_order,
+                    **order
+                ) for order in orders
+            ]
+        executor.shutdown()
+        return [execution.result() for execution in executions]
+
+    def place_conditional_order_bulk(self, orders: list, max_in_parallel=10):
+        """
+        Places multiple conditional orders in bulk using multithreading. For
+        more information on place_active_order, see
+        https://bybit-exchange.github.io/docs/inverse/#t-placecond.
+
+        :param orders: A list of orders and their parameters.
+        :param max_in_parallel: The number of requests to be sent in parallel.
+            Note that you are limited to 50 requests per second.
+        :returns: Future request result dictionaries as a list.
+        """
+
+        with ThreadPoolExecutor(max_workers=max_in_parallel) as executor:
+            executions = [
+                executor.submit(
+                    self.place_conditional_order,
+                    **order
+                ) for order in orders
+            ]
+        executor.shutdown()
+        return [execution.result() for execution in executions]
+
+    def cancel_conditional_order_bulk(self, orders: list, max_in_parallel=10):
+        """
+        Cancels multiple conditional orders in bulk using multithreading. For
+        more information on cancel_active_order, see
+        https://bybit-exchange.github.io/docs/inverse/#t-cancelcond.
+
+        :param list orders: A list of orders and their parameters.
+        :param max_in_parallel: The number of requests to be sent in parallel.
+            Note that you are limited to 50 requests per second.
+        :returns: Future request result dictionaries as a list.
+        """
+
+        with ThreadPoolExecutor(max_workers=max_in_parallel) as executor:
+            executions = [
+                executor.submit(
+                    self.cancel_conditional_order,
+                    **order
+                ) for order in orders
+            ]
+        executor.shutdown()
+        return [execution.result() for execution in executions]
+
+    def replace_conditional_order_bulk(self, orders: list, max_in_parallel=10):
+        """
+        Replaces multiple conditional orders in bulk using multithreading. For
+        more information on replace_active_order, see
+        https://bybit-exchange.github.io/docs/inverse/#t-replacecond.
+
+        :param list orders: A list of orders and their parameters.
+        :param max_in_parallel: The number of requests to be sent in parallel.
+            Note that you are limited to 50 requests per second.
+        :returns: Future request result dictionaries as a list.
+        """
+
+        with ThreadPoolExecutor(max_workers=max_in_parallel) as executor:
+            executions = [
+                executor.submit(
+                    self.replace_conditional_order,
+                    **order
+                ) for order in orders
+            ]
+        executor.shutdown()
+        return [execution.result() for execution in executions]
 
 class WebSocket(FuturesWebSocketManager):
     def __init__(self, test, domain="",
