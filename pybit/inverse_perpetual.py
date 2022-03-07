@@ -702,6 +702,7 @@ class HTTP(InverseFuturesHTTPManager):
         executor.shutdown()
         return [execution.result() for execution in executions]
 
+
 class WebSocket(FuturesWebSocketManager):
     def __init__(self, test, domain="",
                  api_key=None, api_secret=None):

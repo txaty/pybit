@@ -123,7 +123,8 @@ class HTTPManager:
             bytes(_val, "utf-8"), digestmod="sha256"
         ).hexdigest())
 
-    def _verify_string(self,params,key):
+    @staticmethod
+    def _verify_string(params, key):
         if key in params:
             if not isinstance(params[key], str):
                 return False

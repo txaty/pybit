@@ -1636,8 +1636,6 @@ class HTTP:
         """
         Create internal transfer.
 
-        :param kwargs: See
-            https://bybit-exchange.github.io/docs/account_asset/#t-querysubaccountlist.
         :returns: Request results as dictionary.
         """
 
