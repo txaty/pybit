@@ -16,7 +16,7 @@ except ImportError:
     from json.decoder import JSONDecodeError
 
 
-class HTTPManager:
+class _HTTPManager:
     def __init__(self, endpoint=None, api_key=None, api_secret=None,
                  logging_level=logging.INFO, log_requests=False,
                  request_timeout=10, recv_window=5000, force_retry=False,
@@ -338,7 +338,7 @@ class HTTPManager:
         )
 
 
-class FuturesHTTPManager(HTTPManager):
+class _FuturesHTTPManager(_HTTPManager):
     def orderbook(self, **kwargs):
         """
         Get the orderbook.
@@ -585,7 +585,7 @@ class FuturesHTTPManager(HTTPManager):
         )
 
 
-class InverseFuturesHTTPManager(FuturesHTTPManager):
+class _InverseFuturesHTTPManager(_FuturesHTTPManager):
     def query_kline(self, **kwargs):
         """
         Get kline.

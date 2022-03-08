@@ -3,11 +3,11 @@ Inverse Futures uses the exact same WebSocket as Inverse Perpetual. Refer to
 inverse_perpetual.py to access the Inverse Futures through WebSocket.
 """
 
-from .http_manager import InverseFuturesHTTPManager
+from ._http_manager import _InverseFuturesHTTPManager
 from concurrent.futures import ThreadPoolExecutor
 
 
-class HTTP(InverseFuturesHTTPManager):
+class HTTP(_InverseFuturesHTTPManager):
     def place_active_order(self, **kwargs):
         """
         Places an active order. For more information, see

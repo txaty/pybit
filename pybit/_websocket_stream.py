@@ -22,7 +22,7 @@ USDT_PERPETUAL = "USDT Perp"
 SPOT = "Spot"
 
 
-class WebSocketManager:
+class _WebSocketManager:
     def __init__(self, url, callback_function, ws_name,
                  test, domain="", api_key=None, api_secret=None,
                  ping_interval=30, ping_timeout=10,
@@ -171,7 +171,7 @@ class WebSocketManager:
         self.exited = True
 
 
-class FuturesWebSocketManager(WebSocketManager):
+class _FuturesWebSocketManager(_WebSocketManager):
     def __init__(self, url, ws_name,
                  test, domain="", api_key=None, api_secret=None):
         super().__init__(
@@ -346,7 +346,7 @@ class FuturesWebSocketManager(WebSocketManager):
         self.callback_directory.pop(topic)
 
 
-class SpotWebSocketManager(WebSocketManager):
+class _SpotWebSocketManager(_WebSocketManager):
     def __init__(self, url, ws_name,
                  test, domain="", api_key=None, api_secret=None):
         super().__init__(

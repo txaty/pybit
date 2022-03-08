@@ -1,7 +1,7 @@
-from .http_manager import FuturesHTTPManager
-from .websocket_stream import FuturesWebSocketManager
-from .websocket_stream import USDT_PERPETUAL
-from .websocket_stream import _identify_ws_method
+from ._http_manager import _FuturesHTTPManager
+from ._websocket_stream import _FuturesWebSocketManager
+from ._websocket_stream import USDT_PERPETUAL
+from ._websocket_stream import _identify_ws_method
 from concurrent.futures import ThreadPoolExecutor
 
 
@@ -10,7 +10,7 @@ PUBLIC_WSS = "wss://{SUBDOMAIN}.{DOMAIN}.com/realtime_public"
 PRIVATE_WSS = "wss://{SUBDOMAIN}.{DOMAIN}.com/realtime_private"
 
 
-class HTTP(FuturesHTTPManager):
+class HTTP(_FuturesHTTPManager):
     def query_kline(self, **kwargs):
         """
         Get kline.
@@ -817,14 +817,14 @@ class WebSocket:
 
     def _ws_public_subscribe(self, topic, callback, symbol):
         if not self.ws_public:
-            self.ws_public = FuturesWebSocketManager(
+            self.ws_public = _FuturesWebSocketManager(
                 PUBLIC_WSS, ws_name, self.test, domain=self.domain
             )
         self.ws_public.subscribe(topic, callback, symbol)
 
     def _ws_private_subscribe(self, topic, callback):
         if not self.ws_private:
-            self.ws_private = FuturesWebSocketManager(
+            self.ws_private = _FuturesWebSocketManager(
                 PRIVATE_WSS, ws_name, self.test, domain=self.domain,
                 api_key=self.api_key, api_secret=self.api_secret
             )
@@ -837,7 +837,7 @@ class WebSocket:
                 PUBLIC_WSS: self._ws_public_subscribe,
                 PRIVATE_WSS: self._ws_private_subscribe
             })
-        symbol = FuturesWebSocketManager._extract_symbol(topic)
+        symbol = _FuturesWebSocketManager._extract_symbol(topic)
         if symbol:
             subscribe(topic, callback, symbol)
         else:

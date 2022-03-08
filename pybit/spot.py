@@ -1,7 +1,7 @@
-from .http_manager import HTTPManager
-from .websocket_stream import SpotWebSocketManager
-from .websocket_stream import SPOT
-from .websocket_stream import _identify_ws_method
+from ._http_manager import _HTTPManager
+from ._websocket_stream import _SpotWebSocketManager
+from ._websocket_stream import SPOT
+from ._websocket_stream import _identify_ws_method
 
 from concurrent.futures import ThreadPoolExecutor
 
@@ -12,7 +12,7 @@ PUBLIC_V2_WSS = "wss://{SUBDOMAIN}.{DOMAIN}.com/spot/quote/ws/v2"
 PRIVATE_WSS = "wss://{SUBDOMAIN}.{DOMAIN}.com/spot/ws"
 
 
-class HTTP(HTTPManager):
+class HTTP(_HTTPManager):
     def orderbook(self, **kwargs):
         """
         Get the orderbook.
@@ -399,21 +399,21 @@ class WebSocket:
 
     def _ws_public_v1_subscribe(self, topic, callback):
         if not self.ws_public_v1:
-            self.ws_public_v1 = SpotWebSocketManager(
+            self.ws_public_v1 = _SpotWebSocketManager(
                 PUBLIC_V1_WSS, ws_name, self.test, domain=self.domain
             )
         self.ws_public_v1.subscribe(topic, callback)
 
     def _ws_public_v2_subscribe(self, topic, callback):
         if not self.ws_public_v2:
-            self.ws_public_v2 = SpotWebSocketManager(
+            self.ws_public_v2 = _SpotWebSocketManager(
                 PUBLIC_V2_WSS, ws_name, self.test, domain=self.domain
             )
         self.ws_public_v2.subscribe(topic, callback)
 
     def _ws_private_subscribe(self, topic, callback):
         if not self.ws_private:
-            self.ws_private = SpotWebSocketManager(
+            self.ws_private = _SpotWebSocketManager(
                 PRIVATE_WSS, ws_name, self.test, domain=self.domain,
                 api_key=self.api_key, api_secret=self.api_secret
             )

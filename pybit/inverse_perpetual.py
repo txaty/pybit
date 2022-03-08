@@ -1,6 +1,6 @@
-from .http_manager import InverseFuturesHTTPManager
-from .websocket_stream import FuturesWebSocketManager
-from .websocket_stream import INVERSE_PERPETUAL
+from ._http_manager import _InverseFuturesHTTPManager
+from ._websocket_stream import _FuturesWebSocketManager
+from ._websocket_stream import INVERSE_PERPETUAL
 from concurrent.futures import ThreadPoolExecutor
 
 
@@ -8,7 +8,7 @@ ws_name = INVERSE_PERPETUAL
 WSS = "wss://{SUBDOMAIN}.{DOMAIN}.com/realtime"
 
 
-class HTTP(InverseFuturesHTTPManager):
+class HTTP(_InverseFuturesHTTPManager):
     def query_mark_price_kline(self, **kwargs):
         """
         Query mark price kline (like query_kline but for mark price).
@@ -703,7 +703,7 @@ class HTTP(InverseFuturesHTTPManager):
         return [execution.result() for execution in executions]
 
 
-class WebSocket(FuturesWebSocketManager):
+class WebSocket(_FuturesWebSocketManager):
     def __init__(self, test, domain="",
                  api_key=None, api_secret=None):
         super().__init__(WSS, ws_name, test=test, domain=domain,
