@@ -526,7 +526,7 @@ class WebSocket:
         """
         topic = \
             {
-                "topic": "trade",
+                "topic": "depth",
                 "event": "sub",
                 "params": {
                     "symbol": symbol,
