@@ -107,9 +107,9 @@ a specific market type, like Inverse Perpetual, you can import and define
 HTTP like so:
 
 from pybit.inverse_perpetual import HTTP   <-- exclusively supports spot.
-from pybit import inverse_perpetual   <-- import HTTP & WSS for inverse perp
-from pybit import spot   <-- import HTTP & WSS for spot
 """
+from pybit import inverse_perpetual  # <-- import HTTP & WSS for inverse perp
+from pybit import spot  # <-- import HTTP & WSS for spot
 
 """
 You can create an authenticated or unauthenticated HTTP session. 
