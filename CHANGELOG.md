@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2022-03-09
+### Added
+- New modules for each API as part of a restructuring effort: `inverse_perpetual.py`, `usdt_perpetual.py`, `spot.py`, and more
+  - see the [README](https://github.com/bybit-exchange/pybit/blob/master/README.md) for how to import these new modules 
+  - `HTTP` and `WebSocket` classes within each applicable module
+  - These classes use inheritance to reflect the structure of the Bybit APIs - due to the division of endpoints along the lines of different market types
+  - This means that different classes can share their common endpoints, such as `api_key_info()`, whilst keeping their distinctive endpoints like `get_active_order()` separate
+  
+### Changed
+- `WebSocket` functionality to use callbacks instead of polling
+  - This means that instead of polling `ws.fetch()` for your latest websocket messages, you can now simply define a function (`my_callback_function`), and pass this as an argument upon subscribing to your chosen topic
+    - see the [example file](https://github.com/bybit-exchange/pybit/blob/master/examples/websocket_example.py) for more information
+  - This also removes the need to remember topic names and JSON formats, as you now directly call a class method to subscribe
+  - There is also a `custom_topic_stream` method which can be used if a new websocket topic has been released by Bybit, but it's not been added to `pybit` yet
+- `HTTP` classes will now instantiate a new HTTP session for each API (Spot (`spot.HTTP`), Account Asset (`account_asset.HTTP`), etc)
+  - this is due to the restructuring of `pybit` to use class inheritance
+- Generally, the restructuring has allowed a great amount of segregation of the internal code to occur, which will allow for easier future development
+  
+### Removed
+- The `WebSocket` class from the `__init__.py` file, which was imported like so: `from pybit import WebSocket`
+  - This is because of the aforementioned functionality changes, which also have the potential to improve performance (as a core no longer needs to be occupied polling `ws.fetch()`)
+- However, the `HTTP` class was not removed from `__init__.py` in an effort to provide a unified alternative
+  - Despite this, we would recommend preferring the market-specific modules
+
 ## [1.3.6] - 2022-02-28
 ### Changed
 - Added `query_trading_fee_rate()`
