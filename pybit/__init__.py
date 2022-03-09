@@ -8,7 +8,7 @@ pybit is a lightweight and high-performance API connector for the
 RESTful and WebSocket APIs of the Bybit exchange.
 
 Documentation can be found at
-https://github.com/verata-veritatis/pybit
+https://github.com/bybit-exchange/pybit
 
 :copyright: (c) 2020-2021 verata-veritatis
 :license: MIT License
