@@ -252,7 +252,10 @@ class _FuturesWebSocketManager(_WebSocketManager):
 
             # Record the initial snapshot.
             if "snapshot" in message["type"]:
-                self.data[topic] = message["data"]
+                try:
+                    self.data[topic] = message["data"]["order_book"]
+                except TypeError:
+                    self.data[topic] = message["data"]
 
             # Make updates according to delta response.
             elif "delta" in message["type"]:
