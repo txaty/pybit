@@ -2,142 +2,64 @@
 To see which endpoints and topics are available, check the Bybit API 
 documentation: https://bybit-exchange.github.io/docs/inverse/#t-websocket
 
-Inverse Perpetual endpoints:
-wss://stream-testnet.bybit.com/realtime
-wss://stream.bybit.com/realtime
-
-USDT Perpetual endpoints:
-wss://stream-testnet.bybit.com/realtime_public
-wss://stream-testnet.bybit.com/realtime_private
-wss://stream.bybit.com/realtime_public
-wss://stream.bybit.com/realtime_private
-
-Spot endpoints:
-wss://stream-testnet.bybit.com/spot/quote/ws/v1
-wss://stream-testnet.bybit.com/spot/quote/ws/v2
-wss://stream-testnet.bybit.com/spot/ws
-wss://stream.bybit.com/spot/quote/ws/v1
-wss://stream.bybit.com/spot/quote/ws/v2
-wss://stream.bybit.com/spot/ws
-
-Futures Public Topics:
-orderBookL2_25
-orderBookL2-200
-trade
-insurance
-instrument_info
-klineV2
-
-Futures Private Topics:
-position
-execution
-order
-stop_order
-wallet
-
-Spot Topics:
-Subscribing to spot topics uses the JSON format to pass the topic name and
-filters, as opposed to futures WS where the topic and filters are pass in a
-single string. So, it's recommended to pass a JSON or python dict in your
-subscriptions, which also be used to fetch the topic's updates. Examples can
-be found in the code panel here: https://bybit-exchange.github.io/docs/spot/#t-publictopics
-
-However, as private spot topics do not require a subscription, the following
-strings can be used to fetch data:
-outboundAccountInfo
-executionReport
-ticketInfo
+There are several WSS URLs offered by Bybit, which pybit manages for you.
+However, you can set a custom `domain` as shown below.
 """
 
-# Import the WebSocket object from pybit.
-from pybit import WebSocket
+from time import sleep
+
+# Import your desired markets from pybit
+from pybit import inverse_perpetual
+from pybit import spot
 
 """
-We can also import the HTTP object at the same time using:
-
-from pybit import HTTP, WebSocket
-
-Additionally, we can simply import all of pybit and use each
-object selectively.
-
-import pybit
-client = pybit.HTTP(...)
-ws = pybit.WebSocket(...)
+An alternative way to import:
+from pybit.inverse_perpetual import WebSocket, HTTP
 """
 
-# Define your endpoint URLs and subscriptions.
-endpoint_public = 'wss://stream.bybit.com/realtime_public'
-endpoint_private = 'wss://stream.bybit.com/realtime_private'
-subs = [
-    'orderBookL2_25.BTCUSD',
-    'instrument_info.100ms.BTCUSD',
-    'instrument_info.100ms.ETHUSD'
-]
+# Set up logging (optional)
+import logging
+logging.basicConfig(filename="pybit.log", level=logging.DEBUG,
+                    format="%(asctime)s %(levelname)s %(message)s")
 
-# Connect without authentication!
-ws_unauth = WebSocket(endpoint_public, subscriptions=subs)
 
 # Connect with authentication!
-ws_auth = WebSocket(
-    endpoint_private,
-    subscriptions=['position'],
-    api_key='...',
-    api_secret='...'
+ws_inverse = inverse_perpetual.WebSocket(
+    test=True,
+    api_key="...",  # omit the api_key & secret to connect w/o authentication
+    api_secret="...",
+    # to pass a custom domain in case of connectivity problems, you can use:
+    domain="bytick"  # the default is "bybit"
 )
 
-# Let's fetch the orderbook for BTCUSD.
-print(
-    ws_unauth.fetch('orderBookL2_25.BTCUSD')
-)
+# Let's fetch the orderbook for BTCUSD. First, we'll define a function.
+def handle_orderbook(message):
+    # I will be called every time there is new orderbook data!
+    print(message)
+    orderbook_data = message["data"]
 
-# We can also create a dict containing multiple results.
-print(
-    {i: ws_unauth.fetch(i) for i in subs}
-)
-
-# Check on your position. Note that no position data is received until a
-# change in your position occurs (initially, there will be no data).
-print(
-    ws_auth.fetch('position')
-)
+# Now, we can subscribe to the orderbook stream and pass our arguments:
+# our function and our selected symbol.
+# To subscribe to multiple symbols, pass a list: ["BTCUSD", "ETHUSD"]
+# To subscribe to all symbols, pass "*".
+ws_inverse.orderbook_25_stream(handle_orderbook, "BTCUSD")
 
 
-"""
-Spot websocket sample usage.
-As using the spot websocket works slightly differently, separate sample usage is
-listed here.
-"""
+# To subscribe to private data, the process is the same:
+def handle_position(message):
+    # I will be called every time there is new position data!
+    print(message)
 
-# Define endpoints and subscriptions
-endpoint_spot_v1 = "wss://stream.bybit.com/spot/quote/ws/v1"
-endpoint_spot_private = "wss://stream.bybit.com/spot/ws"
-trade_v1 = """
-{
-    "topic": "trade",
-    "event": "sub",
-    "symbol": "BTCUSDT",
-    "params": {
-        "binary": false
-    }
-}"""
-realtimes_v1 = """
-{
-    "topic": "realtimes",
-    "event": "sub",
-    "symbol": "BTCUSDT",
-    "params": {
-        "binary": false
-    }
-}"""
-subs = [trade_v1, realtimes_v1]
+ws_inverse.position_stream(handle_orderbook)
 
-# Connect to the unauth spot websocket
-ws_spot_unauth = WebSocket(endpoint=endpoint_spot_v1, subscriptions=subs)
 
-# Fetch this subscription
-print(ws_spot_unauth.fetch(trade_v1))
+# Similarly, if you want to listen to the WebSockets of other markets:
+ws_spot = spot.WebSocket(test=True)
+# handle_orderbook() will now be called for both inverse and spot data.
+# To keep the data separate, simply create another function and pass it below.
+ws_spot.depth_v2_stream(handle_orderbook, "BTCUSDT")
 
-# Connect to the auth spot websocket (subscriptions are not required)
-ws_spot_auth = WebSocket(endpoint=endpoint_spot_private)
 
-print(ws_spot_auth.fetch('outboundAccountInfo'))
+while True:
+    # Run your main trading logic here.
+    sleep(1)

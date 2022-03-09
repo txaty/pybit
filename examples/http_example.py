@@ -99,37 +99,57 @@ close_position()
 """
 
 # Import pybit and define the HTTP object.
-from pybit import HTTP
+from pybit import HTTP  # supports inverse perp & futures, usdt perp, spot.
+"""
+Some methods might need extra arguments due to the current Bybit APIs - 
+which are divided across market types. To ensure you're sending requests to 
+a specific market type, like Inverse Perpetual, you can import and define 
+HTTP like so:
+
+from pybit.inverse_perpetual import HTTP   <-- exclusively supports spot.
+"""
+from pybit import inverse_perpetual  # <-- import HTTP & WSS for inverse perp
+from pybit import spot  # <-- import HTTP & WSS for spot
 
 """
 You can create an authenticated or unauthenticated HTTP session. 
-You can skip authentication by not passing any value for api_key
-and api_secret.
+You can skip authentication by not passing any value for the key and secret.
 """
 
 # Unauthenticated
-session_unauth = HTTP(endpoint='https://api.bybit.com')
+session_unauth = inverse_perpetual.HTTP(endpoint="https://api.bybit.com")
 
 # Authenticated
-session_auth = HTTP(
-    endpoint='https://api.bybit.com',
-    api_key='...',
-    api_secret='...'
+session_auth = inverse_perpetual.HTTP(
+    endpoint="https://api.bybit.com",
+    api_key="...",
+    api_secret="..."
 )
 
-# Lets get market information about EOSUSD. Note that 'symbol' is
+# Let's get market information about EOSUSD. Note that "symbol" is
 # a required parameter as per the Bybit API documentation.
-session_unauth.latest_information_for_symbol(symbol='EOSUSD')
+session_unauth.latest_information_for_symbol(symbol="EOSUSD")
 
 # We can fetch our wallet balance using an auth'd session.
-session_auth.get_wallet_balance(coin='BTC')
+session_auth.get_wallet_balance(coin="BTC")
+
 
 """
-Spot API.
+Spot & other APIs.
+from pybit import HTTP  <-- supports inverse perp & futures, usdt perp, spot.
+from pybit.spot import HTTP   <-- exclusively supports spot.
 """
 
-# Unauthenticated, prefer spot endpoint
-session_spot_unauth = HTTP(endpoint='https://api.bybit.com', spot=True)
+# Reassign session_auth to exclusively use spot.
+session_auth = spot.HTTP(
+    endpoint="https://api.bybit.com",
+    api_key="...",
+    api_secret="..."
+)
 
-# Prefer spot endpoint for this request, without specifying at obj creation
-session_auth.get_wallet_balance(coin='BTC', spot=True)
+
+# Prefer spot endpoint via the `spot` arg
+session_unauth = HTTP(endpoint="https://api.bybit.com", spot=True)
+
+# Require spot endpoint (`spot` arg unnecessary)
+session_auth.get_wallet_balance(coin="BTC")
