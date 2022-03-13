@@ -50,7 +50,7 @@ def handle_position(message):
     # I will be called every time there is new position data!
     print(message)
 
-ws_inverse.position_stream(handle_orderbook)
+ws_inverse.position_stream(handle_position)
 
 
 # Similarly, if you want to listen to the WebSockets of other markets:
