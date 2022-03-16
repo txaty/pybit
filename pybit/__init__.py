@@ -10,7 +10,7 @@ RESTful and WebSocket APIs of the Bybit exchange.
 Documentation can be found at
 https://github.com/bybit-exchange/pybit
 
-:copyright: (c) 2020-2021 verata-veritatis
+:copyright: (c) 2020-2022 bybit-exchange
 :license: MIT License
 
 """

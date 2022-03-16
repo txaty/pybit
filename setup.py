@@ -12,10 +12,10 @@ setup(
     description='Python3 Bybit HTTP/WebSocket API Connector', 
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/verata-veritatis/pybit',
+    url='https://github.com/bybit-exchange/pybit',
     license='MIT License',
-    author='Verata Veritatis',
-    author_email='verata@pm.me',
+    author='Dexter Dickinson',
+    author_email='dexter.dickinson@bybit.com',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
