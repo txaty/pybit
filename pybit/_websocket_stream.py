@@ -383,7 +383,7 @@ class _SpotWebSocketManager(_WebSocketManager):
 
         if self.private_websocket:
             # Spot private topics don't need a subscription message
-            self._set_callback(topic, callback)
+            self._set_callback(topic, callback, private_websocket=True)
             return
 
         conformed_topic = self._conform_topic(topic)
@@ -549,8 +549,9 @@ class _SpotWebSocketManager(_WebSocketManager):
         topic.pop("shared", "")
         return json.dumps(topic, sort_keys=True, separators=(",", ":"))
 
-    def _set_callback(self, topic, callback_function):
-        topic = self._conform_topic(topic)
+    def _set_callback(self, topic, callback_function, private_websocket=False):
+        if not private_websocket:
+            topic = self._conform_topic(topic)
         self.callback_directory[topic] = callback_function
 
     def _get_callback(self, topic):

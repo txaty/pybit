@@ -101,6 +101,10 @@ def handle_position(message):
 
 ws.orderbook_25_stream(handle_orderbook, "BTCUSD")
 ws.position_stream(handle_position)
+
+while True:
+    # Run your main trading strategy here
+    pass  # To avoid CPU utilisation, use time.sleep(1)
 ```
 Check out the example python files or the list of endpoints below for more information on available
 endpoints and methods. Usage examples on the `HTTP` methods can
