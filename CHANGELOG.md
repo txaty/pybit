@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2022-03-17
+### Added
+- `record_request_time` arg to `HTTP` classes which, if true, returns the response dictionary in a tuple with the request elapsed time - as recorded by `requests`
+
+### Changed
+- `websocket_example.py` to demonstrate callbacks clearly
+- the license to reflect the transition to bybit-exchange
+
+### Fixed
+- `JSONDecodeError` when trying to subscribe to a spot private WSS stream
+
 ## [2.0.0] - 2022-03-09
 ### Added
 - New modules for each API as part of a restructuring effort: `inverse_perpetual.py`, `usdt_perpetual.py`, `spot.py`, and more
