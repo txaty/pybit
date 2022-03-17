@@ -21,7 +21,7 @@ class _HTTPManager:
                  logging_level=logging.INFO, log_requests=False,
                  request_timeout=10, recv_window=5000, force_retry=False,
                  retry_codes=None, ignore_codes=None, max_retries=3,
-                 retry_delay=3, referral_id=None):
+                 retry_delay=3, referral_id=None, record_request_time=False):
         """Initializes the HTTP class."""
 
         # Set the endpoint.
@@ -83,6 +83,10 @@ class _HTTPManager:
         # Add referral ID to header.
         if referral_id:
             self.client.headers.update({"Referer": referral_id})
+
+        # If true, records and returns the request's elapsed time in a tuple
+        # with the response body.
+        self.record_request_time = record_request_time
 
     def _auth(self, method, params, recv_window):
         """
@@ -322,7 +326,10 @@ class _HTTPManager:
                         time=dt.utcnow().strftime("%H:%M:%S")
                     )
             else:
-                return s_json
+                if self.record_request_time:
+                    return s_json, s.elapsed
+                else:
+                    return s_json
 
     def api_key_info(self):
         """
