@@ -239,9 +239,7 @@ class _HTTPManager:
 
             # Attempt the request.
             try:
-                start_request_time = time.time()
                 s = self.client.send(r, timeout=self.timeout)
-                end_request_time = time.time()
 
             # If requests fires an error, retry.
             except (
@@ -329,7 +327,7 @@ class _HTTPManager:
                     )
             else:
                 if self.record_request_time:
-                    return s_json, end_request_time - start_request_time
+                    return s_json, s.elapsed
                 else:
                     return s_json
 
