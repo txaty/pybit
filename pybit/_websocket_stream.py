@@ -243,12 +243,15 @@ class _FuturesWebSocketManager(_WebSocketManager):
             else:
                 return False
 
-        def process_delta_orderbook():
+        def initialise_local_data():
             # Create self.data
             try:
                 self.data[topic]
             except KeyError:
                 self.data[topic] = []
+
+        def process_delta_orderbook():
+            initialise_local_data()
 
             # Record the initial snapshot.
             if "snapshot" in message["type"]:
@@ -273,6 +276,20 @@ class _FuturesWebSocketManager(_WebSocketManager):
                 # Insert.
                 for entry in message["data"]["insert"]:
                     self.data[topic].append(entry)
+
+        def process_delta_instrument_info():
+            initialise_local_data()
+
+            # Record the initial snapshot.
+            if "snapshot" in message["type"]:
+                self.data[topic] = message["data"]
+
+            # Make updates according to delta response.
+            elif "delta" in message["type"]:
+                # Update.
+                for update in message["data"]["update"]:
+                    for key, value in update.items():
+                        self.data[topic][key] = value
 
         # Check auth
         if is_auth_message():
@@ -302,6 +319,11 @@ class _FuturesWebSocketManager(_WebSocketManager):
             topic = message["topic"]
             if "orderBook" in topic:
                 process_delta_orderbook()
+                callback_data = copy.deepcopy(message)
+                callback_data["type"] = "snapshot"
+                callback_data["data"] = self.data[topic]
+            elif "instrument_info" in topic:
+                process_delta_instrument_info()
                 callback_data = copy.deepcopy(message)
                 callback_data["type"] = "snapshot"
                 callback_data["data"] = self.data[topic]
