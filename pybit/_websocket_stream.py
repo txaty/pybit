@@ -32,6 +32,7 @@ class _WebSocketManager:
         subdomain = SUBDOMAIN_TESTNET if test else SUBDOMAIN_MAINNET
         domain = DOMAIN_MAIN if not domain else domain
         url = url.format(SUBDOMAIN=subdomain, DOMAIN=domain)
+        self.endpoint = url
 
         # Set API keys.
         self.api_key = api_key
