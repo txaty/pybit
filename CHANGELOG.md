@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2022-04-08
+### Fixed
+- The processing of `instrument_info` WebSocket messages so that the user receive a `"type": "snapshot"` every time, rather than having to do their own delta/snapshot processing 
+
 ## [2.0.1] - 2022-03-17
 ### Added
 - `record_request_time` arg to `HTTP` classes which, if true, returns the response dictionary in a tuple with the request elapsed time - as recorded by `requests`
