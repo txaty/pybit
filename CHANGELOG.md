@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.1.0] - 2022-04-08
 ### Fixed
 - The processing of `instrument_info` WebSocket messages so that the user receive a `"type": "snapshot"` every time, rather than having to do their own delta/snapshot processing 
+- Fix `AttributeError: '_FuturesWebSocketManager' object has no attribute 'endpoint'` when attempting reconnect
+
 
 ## [2.0.1] - 2022-03-17
 ### Added
