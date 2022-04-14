@@ -806,7 +806,7 @@ class HTTP(_FuturesHTTPManager):
 
 class WebSocket:
     def __init__(self, test, domain="",
-                 api_key=False, api_secret=False):
+                 api_key=False, api_secret=False, trace_logging=False):
         self.ws_public = None
         self.ws_private = None
 
@@ -814,11 +814,13 @@ class WebSocket:
         self.domain = domain
         self.api_key = api_key
         self.api_secret = api_secret
+        self.trace_logging = trace_logging
 
     def _ws_public_subscribe(self, topic, callback, symbol):
         if not self.ws_public:
             self.ws_public = _FuturesWebSocketManager(
-                PUBLIC_WSS, ws_name, self.test, domain=self.domain
+                PUBLIC_WSS, ws_name, self.test, domain=self.domain,
+                trace_logging=self.trace_logging
             )
         self.ws_public.subscribe(topic, callback, symbol)
 
@@ -826,7 +828,8 @@ class WebSocket:
         if not self.ws_private:
             self.ws_private = _FuturesWebSocketManager(
                 PRIVATE_WSS, ws_name, self.test, domain=self.domain,
-                api_key=self.api_key, api_secret=self.api_secret
+                api_key=self.api_key, api_secret=self.api_secret,
+                trace_logging=self.trace_logging
             )
         self.ws_private.subscribe(topic, callback)
 

@@ -387,7 +387,7 @@ class HTTP(_HTTPManager):
 
 class WebSocket:
     def __init__(self, test, domain="",
-                 api_key=False, api_secret=False):
+                 api_key=False, api_secret=False, trace_logging=False):
         self.ws_public_v1 = None
         self.ws_public_v2 = None
         self.ws_private = None
@@ -396,18 +396,21 @@ class WebSocket:
         self.domain = domain
         self.api_key = api_key
         self.api_secret = api_secret
+        self.trace_logging = trace_logging
 
     def _ws_public_v1_subscribe(self, topic, callback):
         if not self.ws_public_v1:
             self.ws_public_v1 = _SpotWebSocketManager(
-                PUBLIC_V1_WSS, ws_name, self.test, domain=self.domain
+                PUBLIC_V1_WSS, ws_name, self.test, domain=self.domain,
+                trace_logging=self.trace_logging
             )
         self.ws_public_v1.subscribe(topic, callback)
 
     def _ws_public_v2_subscribe(self, topic, callback):
         if not self.ws_public_v2:
             self.ws_public_v2 = _SpotWebSocketManager(
-                PUBLIC_V2_WSS, ws_name, self.test, domain=self.domain
+                PUBLIC_V2_WSS, ws_name, self.test, domain=self.domain,
+                trace_logging=self.trace_logging
             )
         self.ws_public_v2.subscribe(topic, callback)
 
@@ -415,7 +418,8 @@ class WebSocket:
         if not self.ws_private:
             self.ws_private = _SpotWebSocketManager(
                 PRIVATE_WSS, ws_name, self.test, domain=self.domain,
-                api_key=self.api_key, api_secret=self.api_secret
+                api_key=self.api_key, api_secret=self.api_secret,
+                trace_logging=self.trace_logging
             )
         self.ws_private.subscribe(topic, callback)
 

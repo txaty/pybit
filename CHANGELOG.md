@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.1rc0] - 2022-04-14
+### Modified
+- Added arg (`trace_logging`) to enable websocket-client's trace logging, which reveals extra debug information regarding the websocket connection, including the raw sent & received messages
+  - Note: the code implementation is a little wonky and unintuitive, and will be refined as much as possible before the proper release - although the functionality will remain the same.
+
 ## [2.1.0] - 2022-04-08
 ### Fixed
 - The processing of `instrument_info` WebSocket messages so that the user receive a `"type": "snapshot"` every time, rather than having to do their own delta/snapshot processing 
