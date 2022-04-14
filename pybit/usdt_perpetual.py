@@ -1,7 +1,7 @@
 from ._http_manager import _FuturesHTTPManager
 from ._websocket_stream import _FuturesWebSocketManager
 from ._websocket_stream import USDT_PERPETUAL
-from ._websocket_stream import _identify_ws_method
+from ._websocket_stream import _identify_ws_method, _make_public_kwargs
 from concurrent.futures import ThreadPoolExecutor
 
 
@@ -804,33 +804,27 @@ class HTTP(_FuturesHTTPManager):
         return [execution.result() for execution in executions]
 
 
-class WebSocket:
-    def __init__(self, test, domain="",
-                 api_key=False, api_secret=False, trace_logging=False):
+class WebSocket(_FuturesWebSocketManager):
+    def __init__(self, **kwargs):
+        super().__init__(ws_name, **kwargs)
+
         self.ws_public = None
         self.ws_private = None
-
-        self.test = test
-        self.domain = domain
-        self.api_key = api_key
-        self.api_secret = api_secret
-        self.trace_logging = trace_logging
+        self.kwargs = kwargs
+        self.public_kwargs = _make_public_kwargs(self.kwargs)
 
     def _ws_public_subscribe(self, topic, callback, symbol):
         if not self.ws_public:
             self.ws_public = _FuturesWebSocketManager(
-                PUBLIC_WSS, ws_name, self.test, domain=self.domain,
-                trace_logging=self.trace_logging
-            )
+                ws_name, **self.public_kwargs)
+            self.ws_public._connect(PUBLIC_WSS)
         self.ws_public.subscribe(topic, callback, symbol)
 
     def _ws_private_subscribe(self, topic, callback):
         if not self.ws_private:
             self.ws_private = _FuturesWebSocketManager(
-                PRIVATE_WSS, ws_name, self.test, domain=self.domain,
-                api_key=self.api_key, api_secret=self.api_secret,
-                trace_logging=self.trace_logging
-            )
+                ws_name, **self.kwargs)
+            self.ws_private._connect(PRIVATE_WSS)
         self.ws_private.subscribe(topic, callback)
 
     def custom_topic_stream(self, wss_url, topic, callback):

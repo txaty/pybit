@@ -23,16 +23,13 @@ SPOT = "Spot"
 
 
 class _WebSocketManager:
-    def __init__(self, url, callback_function, ws_name,
+    def __init__(self, callback_function, ws_name,
                  test, domain="", api_key=None, api_secret=None,
                  ping_interval=30, ping_timeout=10,
                  restart_on_error=True, trace_logging=False):
 
-        # Set endpoint.
-        subdomain = SUBDOMAIN_TESTNET if test else SUBDOMAIN_MAINNET
-        domain = DOMAIN_MAIN if not domain else domain
-        url = url.format(SUBDOMAIN=subdomain, DOMAIN=domain)
-        self.endpoint = url
+        self.test = test
+        self.domain = domain
 
         # Set API keys.
         self.api_key = api_key
@@ -62,7 +59,6 @@ class _WebSocketManager:
 
         # Set initial state, initialize dictionary and connect.
         self._reset()
-        self._connect(url)
 
     def _on_open(self):
         """
@@ -80,6 +76,16 @@ class _WebSocketManager:
         """
         Open websocket in a thread.
         """
+
+        # Set endpoint.
+        subdomain = SUBDOMAIN_TESTNET if self.test else SUBDOMAIN_MAINNET
+        domain = DOMAIN_MAIN if not self.domain else self.domain
+        url = url.format(SUBDOMAIN=subdomain, DOMAIN=domain)
+        self.endpoint = url
+
+        self.public_v1_websocket = True if url.endswith("v1") else False
+        self.public_v2_websocket = True if url.endswith("v2") else False
+        self.private_websocket = True if url.endswith("/spot/ws") else False
 
         self.ws = websocket.WebSocketApp(
             url=url,
@@ -177,14 +183,8 @@ class _WebSocketManager:
 
 
 class _FuturesWebSocketManager(_WebSocketManager):
-    def __init__(self, url, ws_name,
-                 test, domain="", api_key=None, api_secret=None,
-                 trace_logging=False):
-        super().__init__(
-            url, self._handle_incoming_message, ws_name,
-            test, domain=domain, api_key=api_key, api_secret=api_secret,
-            trace_logging=trace_logging
-        )
+    def __init__(self, ws_name, **kwargs):
+        super().__init__(self._handle_incoming_message, ws_name, **kwargs)
 
         self.private_topics = ["position", "execution", "order", "stop_order",
                                "wallet"]
@@ -379,17 +379,8 @@ class _FuturesWebSocketManager(_WebSocketManager):
 
 
 class _SpotWebSocketManager(_WebSocketManager):
-    def __init__(self, url, ws_name,
-                 test, domain="", api_key=None, api_secret=None,
-                 trace_logging=False):
-        super().__init__(
-            url, self._handle_incoming_message, ws_name,
-            test, domain=domain, api_key=api_key, api_secret=api_secret,
-            trace_logging=trace_logging
-        )
-        self.public_v1_websocket = True if url.endswith("v1") else False
-        self.public_v2_websocket = True if url.endswith("v2") else False
-        self.private_websocket = True if api_key else False
+    def __init__(self, ws_name, **kwargs):
+        super().__init__(self._handle_incoming_message, ws_name, **kwargs)
 
     def subscribe(self, topic, callback):
         """
@@ -619,3 +610,10 @@ def _find_index(source, target, key):
     Find the index in source list of the targeted ID.
     """
     return next(i for i, j in enumerate(source) if j[key] == target[key])
+
+
+def _make_public_kwargs(private_kwargs):
+    public_kwargs = copy.deepcopy(private_kwargs)
+    public_kwargs.pop("api_key")
+    public_kwargs.pop("api_secret")
+    return public_kwargs

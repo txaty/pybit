@@ -1,7 +1,7 @@
 from ._http_manager import _HTTPManager
 from ._websocket_stream import _SpotWebSocketManager
 from ._websocket_stream import SPOT
-from ._websocket_stream import _identify_ws_method
+from ._websocket_stream import _identify_ws_method, _make_public_kwargs
 
 from concurrent.futures import ThreadPoolExecutor
 
@@ -385,42 +385,35 @@ class HTTP(_HTTPManager):
         )
 
 
-class WebSocket:
-    def __init__(self, test, domain="",
-                 api_key=False, api_secret=False, trace_logging=False):
+class WebSocket(_SpotWebSocketManager):
+    def __init__(self, **kwargs):
+        super().__init__(ws_name, **kwargs)
+
         self.ws_public_v1 = None
         self.ws_public_v2 = None
         self.ws_private = None
-
-        self.test = test
-        self.domain = domain
-        self.api_key = api_key
-        self.api_secret = api_secret
-        self.trace_logging = trace_logging
+        self.kwargs = kwargs
+        self.public_kwargs = _make_public_kwargs(self.kwargs)
 
     def _ws_public_v1_subscribe(self, topic, callback):
         if not self.ws_public_v1:
             self.ws_public_v1 = _SpotWebSocketManager(
-                PUBLIC_V1_WSS, ws_name, self.test, domain=self.domain,
-                trace_logging=self.trace_logging
-            )
+                ws_name, **self.public_kwargs)
+            self.ws_public_v1._connect(PUBLIC_V1_WSS)
         self.ws_public_v1.subscribe(topic, callback)
 
     def _ws_public_v2_subscribe(self, topic, callback):
         if not self.ws_public_v2:
             self.ws_public_v2 = _SpotWebSocketManager(
-                PUBLIC_V2_WSS, ws_name, self.test, domain=self.domain,
-                trace_logging=self.trace_logging
-            )
+                ws_name, **self.public_kwargs)
+            self.ws_public_v2._connect(PUBLIC_V2_WSS)
         self.ws_public_v2.subscribe(topic, callback)
 
     def _ws_private_subscribe(self, topic, callback):
         if not self.ws_private:
             self.ws_private = _SpotWebSocketManager(
-                PRIVATE_WSS, ws_name, self.test, domain=self.domain,
-                api_key=self.api_key, api_secret=self.api_secret,
-                trace_logging=self.trace_logging
-            )
+                ws_name, **self.kwargs)
+            self.ws_private._connect(PRIVATE_WSS)
         self.ws_private.subscribe(topic, callback)
 
     def custom_topic_stream(self, topic, callback, wss_url):

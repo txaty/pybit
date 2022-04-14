@@ -704,11 +704,9 @@ class HTTP(_InverseFuturesHTTPManager):
 
 
 class WebSocket(_FuturesWebSocketManager):
-    def __init__(self, test, domain="",
-                 api_key=None, api_secret=None, trace_logging=False):
-        super().__init__(WSS, ws_name, test=test, domain=domain,
-                         api_key=api_key, api_secret=api_secret,
-                         trace_logging=trace_logging)
+    def __init__(self, **kwargs):
+        super().__init__(ws_name, **kwargs)
+        self._connect(WSS)
 
     def orderbook_25_stream(self, callback, symbol):
         """
