@@ -26,7 +26,7 @@ class _WebSocketManager:
     def __init__(self, url, callback_function, ws_name,
                  test, domain="", api_key=None, api_secret=None,
                  ping_interval=30, ping_timeout=10,
-                 restart_on_error=True):
+                 restart_on_error=True, trace_logging=False):
 
         # Set endpoint.
         subdomain = SUBDOMAIN_TESTNET if test else SUBDOMAIN_MAINNET
@@ -55,6 +55,10 @@ class _WebSocketManager:
 
         # Other optional data handling settings.
         self.handle_error = restart_on_error
+
+        # Enable websocket-client's trace logging for extra debug information
+        # on the websocket connection, including the raw sent & recv messages
+        websocket.enableTrace(trace_logging)
 
         # Set initial state, initialize dictionary and connect.
         self._reset()
@@ -174,10 +178,12 @@ class _WebSocketManager:
 
 class _FuturesWebSocketManager(_WebSocketManager):
     def __init__(self, url, ws_name,
-                 test, domain="", api_key=None, api_secret=None):
+                 test, domain="", api_key=None, api_secret=None,
+                 trace_logging=False):
         super().__init__(
             url, self._handle_incoming_message, ws_name,
-            test, domain=domain, api_key=api_key, api_secret=api_secret
+            test, domain=domain, api_key=api_key, api_secret=api_secret,
+            trace_logging=trace_logging
         )
 
         self.private_topics = ["position", "execution", "order", "stop_order",
@@ -374,10 +380,12 @@ class _FuturesWebSocketManager(_WebSocketManager):
 
 class _SpotWebSocketManager(_WebSocketManager):
     def __init__(self, url, ws_name,
-                 test, domain="", api_key=None, api_secret=None):
+                 test, domain="", api_key=None, api_secret=None,
+                 trace_logging=False):
         super().__init__(
             url, self._handle_incoming_message, ws_name,
-            test, domain=domain, api_key=api_key, api_secret=api_secret
+            test, domain=domain, api_key=api_key, api_secret=api_secret,
+            trace_logging=trace_logging
         )
         self.public_v1_websocket = True if url.endswith("v1") else False
         self.public_v2_websocket = True if url.endswith("v2") else False
