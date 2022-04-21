@@ -19,6 +19,7 @@ DOMAIN_ALT = "bytick"
 
 INVERSE_PERPETUAL = "Inverse Perp"
 USDT_PERPETUAL = "USDT Perp"
+USDC_PERPETUAL = "USDC Perp"
 SPOT = "Spot"
 
 
@@ -184,7 +185,9 @@ class _WebSocketManager:
 
 class _FuturesWebSocketManager(_WebSocketManager):
     def __init__(self, ws_name, **kwargs):
-        super().__init__(self._handle_incoming_message, ws_name, **kwargs)
+        callback_function = kwargs.pop("callback_function") if \
+            kwargs.get("callback_function") else self._handle_incoming_message
+        super().__init__(callback_function, ws_name, **kwargs)
 
         self.private_topics = ["position", "execution", "order", "stop_order",
                                "wallet"]
@@ -237,6 +240,99 @@ class _FuturesWebSocketManager(_WebSocketManager):
         )
         self._set_callback(topic, callback)
 
+    def _initialise_local_data(self, topic):
+        # Create self.data
+        try:
+            self.data[topic]
+        except KeyError:
+            self.data[topic] = []
+
+    def _process_delta_orderbook(self, message, topic):
+        self._initialise_local_data(topic)
+
+        # Record the initial snapshot.
+        if "snapshot" in message["type"]:
+            if message["data"].get("order_book"):
+                self.data[topic] = message["data"]["order_book"]
+            elif message["data"].get("orderBook"):
+                self.data[topic] = message["data"]["orderBook"]
+            else:
+                self.data[topic] = message["data"]
+
+        # Make updates according to delta response.
+        elif "delta" in message["type"]:
+
+            # Delete.
+            for entry in message["data"]["delete"]:
+                index = _find_index(self.data[topic], entry, "id")
+                self.data[topic].pop(index)
+
+            # Update.
+            for entry in message["data"]["update"]:
+                index = _find_index(self.data[topic], entry, "id")
+                self.data[topic][index] = entry
+
+            # Insert.
+            for entry in message["data"]["insert"]:
+                self.data[topic].append(entry)
+
+    def _process_delta_instrument_info(self, message, topic):
+        self._initialise_local_data(topic)
+
+        # Record the initial snapshot.
+        if "snapshot" in message["type"]:
+            self.data[topic] = message["data"]
+
+        # Make updates according to delta response.
+        elif "delta" in message["type"]:
+            # Update.
+            for update in message["data"]["update"]:
+                for key, value in update.items():
+                    self.data[topic][key] = value
+
+    def _process_auth_message(self, message):
+        # If we get successful futures auth, notify user
+        if message.get("success") is True:
+            logger.debug(f"Authorization for {self.ws_name} successful.")
+            self.auth = True
+        # If we get unsuccessful auth, notify user.
+        elif message.get("success") is False:
+            logger.debug(f"Authorization for {self.ws_name} failed. Please "
+                         f"check your API keys and restart.")
+
+    def _process_subscription_message(self, message):
+        try:
+            sub = message["request"]["args"]
+        except KeyError:
+            sub = message["data"]["successTopics"]  # USDC private sub format
+
+        # If we get successful futures subscription, notify user
+        if message.get("success") is True:
+            logger.debug(f"Subscription to {sub} successful.")
+        # Futures subscription fail
+        elif message.get("success") is False:
+            response = message["ret_msg"]
+            logger.error("Couldn't subscribe to topic."
+                         f"Error: {response}.")
+            self._pop_callback(sub[0])
+
+    def _process_normal_message(self, message):
+        topic = message["topic"]
+        if "orderBook" in topic:
+            self._process_delta_orderbook(message, topic)
+            callback_data = copy.deepcopy(message)
+            callback_data["type"] = "snapshot"
+            callback_data["data"] = self.data[topic]
+        elif "instrument_info" in topic:
+            self._process_delta_instrument_info(message, topic)
+            callback_data = copy.deepcopy(message)
+            callback_data["type"] = "snapshot"
+            callback_data["data"] = self.data[topic]
+        else:
+            callback_data = message
+        callback_function = self._get_callback(topic)
+        callback_function(callback_data)
+
     def _handle_incoming_message(self, message):
         def is_auth_message():
             if message.get("request", {}).get("op") == "auth":
@@ -250,94 +346,12 @@ class _FuturesWebSocketManager(_WebSocketManager):
             else:
                 return False
 
-        def initialise_local_data():
-            # Create self.data
-            try:
-                self.data[topic]
-            except KeyError:
-                self.data[topic] = []
-
-        def process_delta_orderbook():
-            initialise_local_data()
-
-            # Record the initial snapshot.
-            if "snapshot" in message["type"]:
-                try:
-                    self.data[topic] = message["data"]["order_book"]
-                except TypeError:
-                    self.data[topic] = message["data"]
-
-            # Make updates according to delta response.
-            elif "delta" in message["type"]:
-
-                # Delete.
-                for entry in message["data"]["delete"]:
-                    index = _find_index(self.data[topic], entry, "id")
-                    self.data[topic].pop(index)
-
-                # Update.
-                for entry in message["data"]["update"]:
-                    index = _find_index(self.data[topic], entry, "id")
-                    self.data[topic][index] = entry
-
-                # Insert.
-                for entry in message["data"]["insert"]:
-                    self.data[topic].append(entry)
-
-        def process_delta_instrument_info():
-            initialise_local_data()
-
-            # Record the initial snapshot.
-            if "snapshot" in message["type"]:
-                self.data[topic] = message["data"]
-
-            # Make updates according to delta response.
-            elif "delta" in message["type"]:
-                # Update.
-                for update in message["data"]["update"]:
-                    for key, value in update.items():
-                        self.data[topic][key] = value
-
-        # Check auth
         if is_auth_message():
-            # If we get successful futures auth, notify user
-            if message.get("success") is True:
-                logger.debug(f"Authorization for {self.ws_name} successful.")
-                self.auth = True
-            # If we get unsuccessful auth, notify user.
-            elif message.get("success") is False:
-                logger.debug(f"Authorization for {self.ws_name} failed. Please "
-                             f"check your API keys and restart.")
-
-        # Check subscription
+            self._process_auth_message(message)
         elif is_subscription_message():
-            sub = message["request"]["args"]
-            # If we get successful futures subscription, notify user
-            if message.get("success") is True:
-                logger.debug(f"Subscription to {sub} successful.")
-            # Futures subscription fail
-            elif message.get("success") is False:
-                response = message["ret_msg"]
-                logger.error("Couldn't subscribe to topic."
-                             f"Error: {response}.")
-                self._pop_callback(sub[0])
-
+            self._process_subscription_message(message)
         else:
-            topic = message["topic"]
-            if "orderBook" in topic:
-                process_delta_orderbook()
-                callback_data = copy.deepcopy(message)
-                callback_data["type"] = "snapshot"
-                callback_data["data"] = self.data[topic]
-            elif "instrument_info" in topic:
-                process_delta_instrument_info()
-                callback_data = copy.deepcopy(message)
-                callback_data["type"] = "snapshot"
-                callback_data["data"] = self.data[topic]
-            else:
-                callback_data = message
-            callback_function = self._get_callback(topic)
-            callback_function(callback_data)
+            self._process_normal_message(message)
 
     def custom_topic_stream(self, topic, callback):
         return self.subscribe(topic=topic, callback=callback)
@@ -346,7 +360,11 @@ class _FuturesWebSocketManager(_WebSocketManager):
         """
         Regex to return the topic without the symbol.
         """
-        if topic_string in self.private_topics:
+        def is_usdc_private_topic():
+            if re.search(r".*\..*\..*\.", topic_string):
+                return True
+
+        if topic_string in self.private_topics or is_usdc_private_topic():
             return topic_string
         topic_without_symbol = re.match(r".*(\..*|)(?=\.)", topic_string)
         return topic_without_symbol[0]
@@ -376,6 +394,33 @@ class _FuturesWebSocketManager(_WebSocketManager):
     def _pop_callback(self, topic):
         topic = self._extract_topic(topic)
         self.callback_directory.pop(topic)
+
+
+class _USDCWebSocketManager(_FuturesWebSocketManager):
+    def __init__(self, ws_name, **kwargs):
+        super().__init__(
+            ws_name, callback_function=self._handle_incoming_message, **kwargs)
+
+    def _handle_incoming_message(self, message):
+        def is_auth_message():
+            if message.get("type") == "AUTH_RESP":
+                return True
+            else:
+                return False
+
+        def is_subscription_message():
+            if message.get("request", {}).get("op") == "subscribe" or \
+                    message.get("type") == "COMMAND_RESP":  # Private sub format
+                return True
+            else:
+                return False
+
+        if is_auth_message():
+            self._process_auth_message(message)
+        elif is_subscription_message():
+            self._process_subscription_message(message)
+        else:
+            self._process_normal_message(message)
 
 
 class _SpotWebSocketManager(_WebSocketManager):
