@@ -61,5 +61,6 @@ ws_spot.depth_v2_stream(handle_orderbook, "BTCUSDT")
 
 
 while True:
-    # Run your main trading logic here.
+    # This while loop is required for the program to run. You may execute
+    # additional code for your trading logic here.
     sleep(1)
