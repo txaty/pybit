@@ -514,6 +514,23 @@ class HTTP(_FuturesHTTPManager):
             auth=True
         )
 
+    def extended_user_trade_records(self, **kwargs):
+        """
+        Get user's trading records. The results are ordered in ascending order
+        (the first item is the oldest). Returns records up to 2 years old.
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/linear/#t-userhistorytraderecords.
+        :returns: Request results as dictionary.
+        """
+
+        return self._submit_request(
+            method="GET",
+            path=self.endpoint + "/private/linear/trade/execution/history-list",
+            query=kwargs,
+            auth=True
+        )
+
     def closed_profit_and_loss(self, **kwargs):
         """
         Get user's closed profit and loss records. The results are ordered in
