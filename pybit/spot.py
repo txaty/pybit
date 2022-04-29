@@ -504,6 +504,10 @@ class WebSocket(_SpotWebSocketManager):
 
     def diff_depth_v1_stream(self, callback, symbol):
         """
+        This topic always returns messages in the "snapshot" format for a
+        simplified user experience. pybit processes the delta/snapshot
+        messages for you. Read the Bybit API documentation for more information.
+
         https://bybit-exchange.github.io/docs/spot/#t-websocketdiffdepth
         """
         topic = \

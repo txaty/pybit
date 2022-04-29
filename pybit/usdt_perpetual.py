@@ -842,6 +842,10 @@ class WebSocket(_FuturesWebSocketManager):
 
     def orderbook_25_stream(self, callback, symbol):
         """
+        This topic always returns messages in the "snapshot" format for a
+        simplified user experience. pybit processes the delta/snapshot
+        messages for you. Read the Bybit API documentation for more information.
+
         https://bybit-exchange.github.io/docs/linear/#t-websocketorderbook25
         """
         topic = "orderBookL2_25.{}"
@@ -849,6 +853,10 @@ class WebSocket(_FuturesWebSocketManager):
 
     def orderbook_200_stream(self, callback, symbol):
         """
+        This topic always returns messages in the "snapshot" format for a
+        simplified user experience. pybit processes the delta/snapshot
+        messages for you. Read the Bybit API documentation for more information.
+
         https://bybit-exchange.github.io/docs/linear/#t-websocketorderbook200
         """
         topic = "orderBook_200.100ms.{}"
@@ -863,6 +871,10 @@ class WebSocket(_FuturesWebSocketManager):
 
     def instrument_info_stream(self, callback, symbol):
         """
+        This topic always returns messages in the "snapshot" format for a
+        simplified user experience. pybit processes the delta/snapshot
+        messages for you. Read the Bybit API documentation for more information.
+
         https://bybit-exchange.github.io/docs/linear/#t-websocketinstrumentinfo
         """
         topic = "instrument_info.100ms.{}"
