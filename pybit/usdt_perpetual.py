@@ -424,9 +424,11 @@ class HTTP(_FuturesHTTPManager):
     def position_mode_switch(self, **kwargs):
         """
         If you are in One-Way Mode, you can only open one position on Buy or
-        Sell side;
-        If you are in Hedge Mode, you can open both Buy and Sell side positions
-        simultaneously.
+        Sell side. If you are in Hedge Mode, you can open both Buy and Sell
+        side positions simultaneously.
+
+        Supports switching between One-Way Mode and Hedge Mode at the coin
+        level.
 
         :param kwargs: See
             https://bybit-exchange.github.io/docs/linear/#t-switchpositionmode.
