@@ -1,5 +1,6 @@
 import time
 import hmac
+import hashlib
 import json
 import logging
 import requests
@@ -127,6 +128,23 @@ class _HTTPManager:
             bytes(_val, "utf-8"), digestmod="sha256"
         ).hexdigest())
 
+    def _usdc_auth(self, params, recv_window):
+        """
+        Generates authentication signature per Bybit API specifications.
+        """
+
+        api_key = self.api_key
+        api_secret = self.api_secret
+
+        if api_key is None or api_secret is None:
+            raise PermissionError("Authenticated endpoints require keys.")
+        payload = json.dumps(params)
+        timestamp = int(time.time() * 10 ** 3)
+        param_str = str(timestamp) + api_key + str(recv_window) + payload
+        hash = hmac.new(bytes(api_secret, "utf-8"), param_str.encode("utf-8"),
+                        hashlib.sha256)
+        return hash.hexdigest()
+
     @staticmethod
     def _verify_string(params, key):
         if key in params:
@@ -183,18 +201,23 @@ class _HTTPManager:
 
             # Authenticate if we are using a private endpoint.
             if auth:
-                # Prepare signature.
-                signature = self._auth(
-                    method=method,
-                    params=query,
-                    recv_window=recv_window,
-                )
-
-                # Sort the dictionary alphabetically.
-                query = dict(sorted(query.items(), key=lambda x: x))
-
-                # Append the signature to the dictionary.
-                query["sign"] = signature
+                if "usdc" in path:
+                    # Prepare signature.
+                    signature = self._usdc_auth(
+                        params=query,
+                        recv_window=recv_window,
+                    )
+                else:
+                    # Prepare signature.
+                    signature = self._auth(
+                        method=method,
+                        params=query,
+                        recv_window=recv_window,
+                    )
+                    # Sort the dictionary alphabetically.
+                    query = dict(sorted(query.items(), key=lambda x: x))
+                    # Append the signature to the dictionary.
+                    query["sign"] = signature
 
             # Define parameters and log the request.
             if query is not None:
@@ -230,7 +253,20 @@ class _HTTPManager:
                         requests.Request(method, path + f"?{full_param_str}",
                                          headers=headers)
                     )
-
+                elif "usdc" in path:
+                    headers = {
+                        "Content-Type": "application/json",
+                        "X-BAPI-API-KEY": self.api_key,
+                        "X-BAPI-SIGN": signature,
+                        "X-BAPI-SIGN-TYPE": "2",
+                        "X-BAPI-TIMESTAMP": str(int(time.time() * 10 ** 3)),
+                        "X-BAPI-RECV-WINDOW": "5000"
+                    }
+                    r = self.client.prepare_request(
+                        requests.Request(method, path,
+                                         data=json.dumps(req_params),
+                                         headers=headers)
+                    )
                 else:
                     r = self.client.prepare_request(
                         requests.Request(method, path,
@@ -272,28 +308,35 @@ class _HTTPManager:
                         time=dt.utcnow().strftime("%H:%M:%S")
                     )
 
+            if "usdc" in path:
+                ret_code = "retCode"
+                ret_msg = "retMsg"
+            else:
+                ret_code = "ret_code"
+                ret_msg = "ret_msg"
+
             # If Bybit returns an error, raise.
-            if s_json["ret_code"]:
+            if s_json[ret_code]:
 
                 # Generate error message.
                 error_msg = (
-                    f"{s_json['ret_msg']} (ErrCode: {s_json['ret_code']})"
+                    f"{s_json[ret_msg]} (ErrCode: {s_json[ret_code]})"
                 )
 
                 # Set default retry delay.
                 err_delay = self.retry_delay
 
                 # Retry non-fatal whitelisted error requests.
-                if s_json["ret_code"] in self.retry_codes:
+                if s_json[ret_code] in self.retry_codes:
 
                     # 10002, recv_window error; add 2.5 seconds and retry.
-                    if s_json["ret_code"] == 10002:
+                    if s_json[ret_code] == 10002:
                         error_msg += ". Added 2.5 seconds to recv_window"
                         recv_window += 2500
 
                     # 10006, ratelimit error; wait until rate_limit_reset_ms
                     # and retry.
-                    elif s_json["ret_code"] == 10006:
+                    elif s_json[ret_code] == 10006:
                         self.logger.error(
                             f"{error_msg}. Ratelimited on current request. "
                             f"Sleeping, then trying again. Request: {path}"
@@ -315,14 +358,14 @@ class _HTTPManager:
                     time.sleep(err_delay)
                     continue
 
-                elif s_json["ret_code"] in self.ignore_codes:
+                elif s_json[ret_code] in self.ignore_codes:
                     pass
 
                 else:
                     raise InvalidRequestError(
                         request=f"{method} {path}: {req_params}",
-                        message=s_json["ret_msg"],
-                        status_code=s_json["ret_code"],
+                        message=s_json[ret_msg],
+                        status_code=s_json[ret_code],
                         time=dt.utcnow().strftime("%H:%M:%S")
                     )
             else:
