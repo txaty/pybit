@@ -424,9 +424,11 @@ class HTTP(_FuturesHTTPManager):
     def position_mode_switch(self, **kwargs):
         """
         If you are in One-Way Mode, you can only open one position on Buy or
-        Sell side;
-        If you are in Hedge Mode, you can open both Buy and Sell side positions
-        simultaneously.
+        Sell side. If you are in Hedge Mode, you can open both Buy and Sell
+        side positions simultaneously.
+
+        Supports switching between One-Way Mode and Hedge Mode at the coin
+        level.
 
         :param kwargs: See
             https://bybit-exchange.github.io/docs/linear/#t-switchpositionmode.
@@ -508,6 +510,23 @@ class HTTP(_FuturesHTTPManager):
         return self._submit_request(
             method="GET",
             path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def extended_user_trade_records(self, **kwargs):
+        """
+        Get user's trading records. The results are ordered in ascending order
+        (the first item is the oldest). Returns records up to 2 years old.
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/linear/#t-userhistorytraderecords.
+        :returns: Request results as dictionary.
+        """
+
+        return self._submit_request(
+            method="GET",
+            path=self.endpoint + "/private/linear/trade/execution/history-list",
             query=kwargs,
             auth=True
         )
