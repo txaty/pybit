@@ -659,6 +659,6 @@ def _find_index(source, target, key):
 
 def _make_public_kwargs(private_kwargs):
     public_kwargs = copy.deepcopy(private_kwargs)
-    public_kwargs.pop("api_key")
-    public_kwargs.pop("api_secret")
+    public_kwargs.pop("api_key", "")
+    public_kwargs.pop("api_secret", "")
     return public_kwargs
