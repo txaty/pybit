@@ -517,7 +517,7 @@ class WebSocket(_USDCWebSocketManager):
                 PUBLIC_WSS: self._ws_public_subscribe,
                 PRIVATE_WSS: self._ws_private_subscribe
             })
-        symbol = _USDCWebSocketManager._extract_symbol(topic)
+        symbol = self._extract_symbol(topic)
         if symbol:
             subscribe(topic, callback, symbol)
         else:
