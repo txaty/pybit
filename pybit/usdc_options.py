@@ -1,3 +1,4 @@
+from ._http_manager import _USDCHTTPManager
 from ._websocket_stream import _USDCOptionsWebSocketManager
 from ._websocket_stream import USDC_OPTIONS
 from ._websocket_stream import _identify_ws_method, _make_public_kwargs
@@ -6,6 +7,309 @@ from ._websocket_stream import _identify_ws_method, _make_public_kwargs
 ws_name = USDC_OPTIONS
 PUBLIC_WSS = "wss://{SUBDOMAIN}.{DOMAIN}.com/trade/option/usdc/public/v1"
 PRIVATE_WSS = "wss://{SUBDOMAIN}.{DOMAIN}.com/trade/option/usdc/private/v1"
+
+
+class HTTP(_USDCHTTPManager):
+    def orderbook(self, **kwargs):
+        """
+        Get the orderbook.
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-usdcorderbook.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/public/v1/order-book"
+        return self._submit_request(
+            method="GET",
+            path=self.endpoint + suffix,
+            query=kwargs
+        )
+
+    def query_symbol(self, **kwargs):
+        """
+        Get symbol info.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/public/v1/symbols"
+        return self._submit_request(
+            method="GET",
+            path=self.endpoint + suffix,
+            query=kwargs
+        )
+
+    def latest_information_for_symbol(self, **kwargs):
+        """
+        Get the latest information for symbol.
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-usdctickerinfo.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/public/v1/tick"
+        return self._submit_request(
+            method="GET",
+            path=self.endpoint + suffix,
+            query=kwargs
+        )
+
+    def delivery_price(self, **kwargs):
+        """
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-querydeliveryprice.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/public/v1/delivery-price"
+        return self._submit_request(
+            method="GET",
+            path=self.endpoint + suffix,
+            query=kwargs
+        )
+
+    def place_active_order(self, **kwargs):
+        """
+        Places an active order. For more information, see
+        https://bybit-exchange.github.io/docs/usdc/option/#t-usdcplaceorder.
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-usdcplaceorder.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/private/v1/place-order"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def batch_place_active_orders(self, orders: list):
+        """
+        Each request supports a max. of four orders. The reduceOnly parameter
+        should be separate and unique for each order in the request.
+        https://bybit-exchange.github.io/docs/usdc/option/#t-usdcbatchorders.
+
+        :param orders: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-usdcbatchorders.
+        :returns: Request results as dictionary.
+        """
+
+        query = {"orderRequest": orders}
+        suffix = "/option/usdc/openapi/private/v1/batch-place-orders"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=query,
+            auth=True
+        )
+
+    def cancel_active_order(self, **kwargs):
+        """
+        Cancels an active order. For more information, see
+        https://bybit-exchange.github.io/docs/usdc/option/#t-usdccancelorder.
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-usdccancelorder.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/private/v1/cancel-order"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def batch_cancel_active_order(self, orders: list):
+        """
+        Cancels an active order. For more information, see
+        https://bybit-exchange.github.io/docs/usdc/option/#t-usdcbatchcancelorders.
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-usdcbatchcancelorders.
+        :returns: Request results as dictionary.
+        """
+
+        query = {"cancelRequest": orders}
+        suffix = "/option/usdc/openapi/private/v1/batch-cancel-orders"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=query,
+            auth=True
+        )
+
+    def cancel_all_active_orders(self, **kwargs):
+        """
+        Cancel all active orders that are unfilled or partially filled. Fully
+        filled orders cannot be cancelled.
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-usdccancelall.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/private/v1/cancel-all"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def replace_active_order(self, **kwargs):
+        """
+        Replace order can modify/amend your active orders.
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-usdcreplaceorder.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/private/v1/replace-order"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def batch_replace_active_orders(self, orders: list):
+        """
+        Each request supports a max. of four orders. The reduceOnly parameter
+        should be separate and unique for each order in the request.
+        https://bybit-exchange.github.io/docs/usdc/option/#t-usdcbatchreplaceorders.
+
+        :param orders: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-usdcbatchreplaceorders.
+        :returns: Request results as dictionary.
+        """
+
+        query = {"replaceOrderRequest": orders}
+        suffix = "/option/usdc/openapi/private/v1/batch-replace-orders"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=query,
+            auth=True
+        )
+
+    def wallet_fund_records(self, **kwargs):
+        """
+        Gets transaction log. For more information, see
+        https://bybit-exchange.github.io/docs/usdc/option/#t-transactionlog.
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-transactionlog.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/private/v1/query-transaction-log"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def query_delivery_history(self, **kwargs):
+        """
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-querydeliverylog.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/private/v1/query-delivery-list"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def query_position_expiration_date(self, **kwargs):
+        """
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-querypositioninfo.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/private/v1/query-position-exp-date"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def modify_mmp(self, **kwargs):
+        """
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-modifymmp.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/private/v1/mmp-modify"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def reset_mmp(self, **kwargs):
+        """
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-resetmmp.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/private/v1/query-position"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def query_mmp(self, **kwargs):
+        """
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-querymmpstate.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/private/v1/get-mmp-state"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
 
 
 class WebSocket(_USDCOptionsWebSocketManager):

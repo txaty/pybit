@@ -697,3 +697,153 @@ class _InverseFuturesHTTPManager(_FuturesHTTPManager):
             path=self.endpoint + suffix,
             query=kwargs
         )
+
+
+class _USDCHTTPManager(_HTTPManager):
+    def last_500_trades(self, **kwargs):
+        """
+        Gets the Bybit long-short ratio.
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/perpetual/#t-querylatest500trades.
+        :returns: Request results as dictionary.
+        """
+
+        return self._submit_request(
+            method="GET",
+            path=self.endpoint + "/option/usdc/openapi/public/v1/query-trade-latest",
+            query=kwargs
+        )
+
+    def get_active_order(self, **kwargs):
+        """
+        Gets an active order. For more information, see
+        https://bybit-exchange.github.io/docs/usdc/perpetual/#t-usdcqryunorpartfilled.
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/perpetual/#t-usdcqryunorpartfilled.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/private/v1/query-active-orders"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def user_trade_records(self, **kwargs):
+        """
+        Get user's trading records. The results are ordered in ascending order
+        (the first item is the oldest).
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/perpetual/#t-usdctradehistory.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/private/v1/execution-list"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def get_history_order(self, **kwargs):
+        """
+        Gets an active order. For more information, see
+        https://bybit-exchange.github.io/docs/usdc/perpetual/#t-usdcqryorderhistory.
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/perpetual/#t-usdcqryorderhistory.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/private/v1/query-order-history"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def get_wallet_balance(self, **kwargs):
+        """
+        Get wallet balance info.
+        https://bybit-exchange.github.io/docs/usdc/option/#t-usdcaccountinfo
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-usdcaccountinfo.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/private/v1/query-wallet-balance"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def get_asset_info(self, **kwargs):
+        """
+        Get Asset info.
+        https://bybit-exchange.github.io/docs/usdc/option/#t-assetinfo
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-assetinfo.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/private/v1/query-asset-info"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def get_margin_mode(self, **kwargs):
+        """
+        Get Margin mode.
+        https://bybit-exchange.github.io/docs/usdc/option/#t-querymarginmode
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/option/#t-querymarginmode.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/private/v1/query-margin-info"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def my_position(self, **kwargs):
+        """
+        Get my position list.
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/usdc/perpetual/#t-queryposition.
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/option/usdc/openapi/private/v1/query-position"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
