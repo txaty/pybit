@@ -4,7 +4,9 @@ from ._http_manager import _HTTPManager
 class HTTP(_HTTPManager):
     def create_internal_transfer(self, **kwargs):
         """
-        Create internal transfer.
+        Transfers funds between the different sections of an individuals
+        account (not between subaccounts). For example, between the spot and
+        derivatives accounts.
 
         :param kwargs: See
             https://bybit-exchange.github.io/docs/account_asset/#t-createinternaltransfer.
@@ -24,7 +26,7 @@ class HTTP(_HTTPManager):
 
     def create_subaccount_transfer(self, **kwargs):
         """
-        Create internal transfer.
+        Transfers funds between the parent and child (sub) accounts.
 
         :param kwargs: See
             https://bybit-exchange.github.io/docs/account_asset/#t-createsubaccounttransfer.
@@ -45,8 +47,6 @@ class HTTP(_HTTPManager):
 
     def query_transfer_list(self, **kwargs):
         """
-        Create internal transfer.
-
         :param kwargs: See
             https://bybit-exchange.github.io/docs/account_asset/#t-querytransferlist.
         :returns: Request results as dictionary.
@@ -63,8 +63,6 @@ class HTTP(_HTTPManager):
 
     def query_subaccount_list(self):
         """
-        Create internal transfer.
-
         :returns: Request results as dictionary.
         """
 
@@ -79,8 +77,6 @@ class HTTP(_HTTPManager):
 
     def query_subaccount_transfer_list(self, **kwargs):
         """
-        Create internal transfer.
-
         :param kwargs: See
             https://bybit-exchange.github.io/docs/account_asset/#t-querysubaccounttransferlist.
         :returns: Request results as dictionary.
