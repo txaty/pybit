@@ -231,6 +231,14 @@ Usage examples on the `WebSocket` methods can be found at:
 | Query Transfer List            | `query_transfer_list()`            |
 | Query Subaccount Transfer List | `query_subaccount_transfer_list()` |
 | Query Subaccount List          | `query_subaccount_list()`          |
+| Query Supported Deposit List   | `query_supported_deposit_list()`   |
+| Query Deposit Records          | `query_deposit_records()`          |
+| Query Withdraw Records         | `query_withdraw_records()`         |
+| Query Coin Info                | `query_coin_info()`                |
+| Query Asset Info               | `query_asset_info()`               |
+| Withdraw                       | `withdraw()`                       |
+| Cancel Withdrawal              | `cancel_withdrawal()`              |
+| Query Deposit Address          | `query_deposit_address()`          |
 
 ### pybit Custom Endpoints
 
