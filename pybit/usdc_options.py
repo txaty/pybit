@@ -285,7 +285,7 @@ class HTTP(_USDCHTTPManager):
         :returns: Request results as dictionary.
         """
 
-        suffix = "/option/usdc/openapi/private/v1/query-position"
+        suffix = "/option/usdc/openapi/private/v1/mmp-reset"
 
         return self._submit_request(
             method="POST",
