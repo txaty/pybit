@@ -22,6 +22,7 @@ Official Python3 API connector for Bybit's HTTP and WebSockets APIs.
     + [Active Orders](#active-orders)
     + [Conditional Orders](#conditional-orders)
     + [Position](#position)
+    + [Market Maker Protection](#market-maker-protection)
     + [Risk Limit](#risk-limit)
     + [Funding](#funding)
     + [API Key Info](#api-key-info)
@@ -126,6 +127,8 @@ Usage examples on the `WebSocket` methods can be found at:
 | Liquidated Orders                 | `liquidated_orders()` |
 | Query Mark Price Kline            | `query_mark_price_kline()` |
 | Open Interest                     | `open_interest()` |
+| Delivery Price (USDC)         | `delivery_price()`                |
+| Last 500 Trades (USDC)        | `last_500_trades()`               |
 
 #### Advanced Data
 
@@ -147,10 +150,12 @@ Usage examples on the `WebSocket` methods can be found at:
 | Cancel All Active Orders                | `cancel_all_active_orders()`         |
 | Replace Active Order                    | `replace_active_order()`             |
 | Query Active Order                      | `query_active_order()`               |
+| Batch Place Active Orders (USDC)        | `batch_place_active_orders()`         |
 | Fast Cancel Active Order (Spot)         | `fast_cancel_active_order()`         |
-| Batch Cancel Active Order (Spot)        | `batch_cancel_active_order()`        |
+| Batch Cancel Active Order (Spot, USDC)  | `batch_cancel_active_order()`        |
 | Batch Fast Cancel Active Order (Spot)   | `batch_fast_cancel_active_order()`   |
 | Batch Cancel Active Order By IDs (Spot) | `batch_cancel_active_order_by_ids()` |
+| Batch Replace Active Orders (USDC)      | `batch_replace_active_orders()`      |
 
 #### Conditional Orders
 
@@ -178,6 +183,18 @@ Usage examples on the `WebSocket` methods can be found at:
 | User Trade Records                                    | `user_trade_records()`  |
 | Closed Profit and Loss                                | `closed_profit_and_loss()` |
 | Query Trading Fee Rate                                | `query_trading_fee_rate()` |
+| Query Delivery History (USDC)         | `query_delivery_history()`           |
+| Query Position Expiration Date (USDC) | `query_position_expiration_date()`   |
+
+#### Market Maker Protection
+
+Only available for the USDC API.
+
+| Endpoint   | Method         |
+| ---------- | -------------- |
+| Query MMP  | `query_mmp`()  |
+| Modify MMP | `modify_mmp`() |
+| Reset MMP  | `reset_mmp`()  |
 
 #### Risk Limit
 
@@ -214,6 +231,8 @@ Usage examples on the `WebSocket` methods can be found at:
 | Wallet Fund Records       | `wallet_fund_records()`  |
 | Withdraw Records          | `withdraw_records()`  |
 | Asset Exchange Records    | `asset_exchange_records()` |
+| Get Asset Info (USDC)  | `get_asset_info()`         |
+| Get Margin Mode (USDC) | `get_margin_mode()`        |
 
 ### API Data Endpoints
 

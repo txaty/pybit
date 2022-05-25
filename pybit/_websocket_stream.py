@@ -20,6 +20,7 @@ DOMAIN_ALT = "bytick"
 INVERSE_PERPETUAL = "Inverse Perp"
 USDT_PERPETUAL = "USDT Perp"
 USDC_PERPETUAL = "USDC Perp"
+USDC_OPTIONS = "USDC Options"
 SPOT = "Spot"
 
 
@@ -421,6 +422,46 @@ class _USDCWebSocketManager(_FuturesWebSocketManager):
             self._process_subscription_message(message)
         else:
             self._process_normal_message(message)
+
+
+class _USDCOptionsWebSocketManager(_USDCWebSocketManager):
+    def _process_delta_orderbook(self, message, topic):
+        self._initialise_local_data(topic)
+
+        # Record the initial snapshot.
+        if "NEW" in message["data"]["dataType"]:
+            self.data[topic] = message["data"]["orderBook"]
+
+        # Make updates according to delta response.
+        elif "CHANGE" in message["data"]["dataType"]:
+
+            # Delete.
+            for entry in message["data"]["delete"]:
+                index = _find_index(self.data[topic], entry, "price")
+                self.data[topic].pop(index)
+
+            # Update.
+            for entry in message["data"]["update"]:
+                index = _find_index(self.data[topic], entry, "price")
+                self.data[topic][index] = entry
+
+            # Insert.
+            for entry in message["data"]["insert"]:
+                self.data[topic].append(entry)
+
+    def _process_normal_message(self, message):
+        topic = message["topic"]
+        if "delta.orderbook" in topic:
+            self._process_delta_orderbook(message, topic)
+            callback_data = copy.deepcopy(message)
+            callback_data["data"]["dataType"] = "NEW"
+            for key in ["delete", "update", "insert"]:
+                callback_data["data"].pop(key, "")
+            callback_data["data"]["orderBook"] = self.data[topic]
+        else:
+            callback_data = message
+        callback_function = self._get_callback(topic)
+        callback_function(callback_data)
 
 
 class _SpotWebSocketManager(_WebSocketManager):
