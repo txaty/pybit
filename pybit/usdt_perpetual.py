@@ -489,7 +489,7 @@ class HTTP(_FuturesHTTPManager):
         """
 
         return self._submit_request(
-            method="GET",
+            method="POST",
             path=self.endpoint + "/private/linear/position/add-margin",
             query=kwargs,
             auth=True
