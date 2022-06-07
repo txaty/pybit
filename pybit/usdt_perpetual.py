@@ -489,7 +489,7 @@ class HTTP(_FuturesHTTPManager):
         """
 
         return self._submit_request(
-            method="GET",
+            method="POST",
             path=self.endpoint + "/private/linear/position/add-margin",
             query=kwargs,
             auth=True
@@ -565,7 +565,6 @@ class HTTP(_FuturesHTTPManager):
             method="GET",
             path=self.endpoint + suffix,
             query=kwargs,
-            auth=True
         )
 
     def set_risk_limit(self, **kwargs):

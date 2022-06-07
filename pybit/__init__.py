@@ -33,7 +33,7 @@ except ImportError:
     from json.decoder import JSONDecodeError
 
 # Versioning.
-VERSION = '2.2.0'
+VERSION = '2.2.1'
 
 
 class HTTP:
@@ -1170,7 +1170,7 @@ class HTTP:
         """
 
         return self._submit_request(
-            method='GET',
+            method='POST',
             path=self.endpoint + '/private/linear/position/add-margin',
             query=kwargs,
             auth=True
