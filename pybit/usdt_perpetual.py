@@ -565,7 +565,6 @@ class HTTP(_FuturesHTTPManager):
             method="GET",
             path=self.endpoint + suffix,
             query=kwargs,
-            auth=True
         )
 
     def set_risk_limit(self, **kwargs):
