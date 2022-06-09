@@ -846,4 +846,3 @@ class _USDCHTTPManager(_HTTPManager):
             query=kwargs,
             auth=True
         )
-

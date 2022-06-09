@@ -384,6 +384,207 @@ class HTTP(_HTTPManager):
             path=self.endpoint + suffix
         )
 
+    def borrow_margin_loan(self, **kwargs):
+        """
+        For more information, see
+        https://bybit-exchange.github.io/docs/spot/?python--pybit#t-borrowmarginloan
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/spot/?python--pybit#t-borrowmarginloan
+        :returns: Request result as integer.
+        """
+
+        suffix = "/spot/v1/cross-margin/loan"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def repay_margin_loan(self, **kwargs):
+        """
+        For more information, see
+        https://bybit-exchange.github.io/docs/spot/?python--pybit#t-repaymarginloan
+        :param kwargs: See
+        https://bybit-exchange.github.io/docs/spot/?python--pybit#t-repaymarginloan
+        :returns: Request result as integer.
+        """
+
+        suffix = "/spot/v1/cross-margin/repay"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def query_borrowing_info(self, **kwargs):
+        """
+        For more information, see
+        https://bybit-exchange.github.io/docs/spot/?python--pybit#t-queryborrowinginfo
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/spot/?python--pybit#t-queryborrowinginfo
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/spot/v1/cross-margin/order"
+
+        return self._submit_request(
+            method="GET",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def query_account_info(self, **kwargs):
+        """
+        For more information, see
+        https://bybit-exchange.github.io/docs/spot/?python--pybit#t-queryaccountinfo
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/spot/?python--pybit#t-queryaccountinfo
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/spot/v1/cross-margin/accounts/balance"
+
+        return self._submit_request(
+            method="GET",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def query_interest_quota(self, **kwargs):
+        """
+        For more information, see
+        https://bybit-exchange.github.io/docs/spot/?python--pybit#t-queryinterestquota
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/spot/?python--pybit#t-queryinterestquota
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/spot/v1/cross-margin/loan-info"
+
+        return self._submit_request(
+            method="GET",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def query_repayment_history(self, **kwargs):
+        """
+        For more information, see
+        https://bybit-exchange.github.io/docs/spot/?python--pybit#t-queryrepaymenthistory
+
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/spot/?python--pybit#t-queryrepaymenthistory
+        :returns: Request results as dictionary.
+        """
+
+        suffix = "/spot/v1/cross-margin/repay/history"
+
+        return self._submit_request(
+            method="GET",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def lt_asset_info(self, **kwargs):
+        """
+        For more information, see
+        https://bybit-exchange.github.io/docs/spot/#t-ltinfo
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/spot/#t-ltinfo
+        :returns: Request results as Dictionary.
+        """
+
+        suffix = "/spot/lt/v1/info"
+
+        return self._submit_request(
+            method="GET",
+            path=self.endpoint + suffix,
+            query=kwargs
+        )
+
+    def lt_market_info(self, **kwargs):
+        """
+        For more information, see
+        https://bybit-exchange.github.io/docs/spot/#t-ltquotereference
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/spot/#t-ltquotereference
+        :returns: Request results as Dictionary.
+        """
+
+        suffix = "/spot/lt/v1/reference"
+
+        return self._submit_request(
+            method="GET",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def lt_purchase(self, **kwargs):
+        """
+        For more information, see
+        https://bybit-exchange.github.io/docs/spot/#t-ltpurchase
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/spot/#t-ltpurchase
+        :returns: Request results as Dictionary.
+        """
+
+        suffix = "/spot/lt/v1/purchase"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def lt_redeem(self, **kwargs):
+        """
+        For more information, see
+        https://bybit-exchange.github.io/docs/spot/#t-ltredeem
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/spot/#t-ltredeem
+        :returns: Request results as Dictionary.
+        """
+
+        suffix = "/spot/lt/v1/redeem"
+
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
+    def lt_purchase_redemption_history(self, **kwargs):
+        """
+        For more information, see
+        https://bybit-exchange.github.io/docs/spot/#t-ltrecord
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/spot/#t-ltrecord
+        :returns: Request results as Dictionary.
+        """
+
+        suffix = "/spot/lt/v1/record"
+
+        return self._submit_request(
+            method="GET",
+            path=self.endpoint + suffix,
+            query=kwargs,
+            auth=True
+        )
+
 
 class WebSocket(_SpotWebSocketManager):
     def __init__(self, **kwargs):
@@ -617,3 +818,4 @@ class WebSocket(_SpotWebSocketManager):
         """
         topic = "ticketInfo"
         self._ws_private_subscribe(topic=topic, callback=callback)
+
