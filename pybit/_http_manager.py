@@ -290,6 +290,20 @@ class _HTTPManager:
                 else:
                     raise e
 
+            # Check HTTP status code before trying to decode JSON.
+            if s.status_code != 200:
+                if s.status_code == 403:
+                    error_msg = "You have breached the IP rate limit."
+                else:
+                    error_msg = "HTTP status code is not 200."
+                self.logger.debug(f"Response text: {s.text}")
+                raise FailedRequestError(
+                    request=f"{method} {path}: {req_params}",
+                    message=error_msg,
+                    status_code=s.status_code,
+                    time=dt.utcnow().strftime("%H:%M:%S")
+                )
+
             # Convert response to dictionary, or raise if requests error.
             try:
                 s_json = s.json()
@@ -301,6 +315,7 @@ class _HTTPManager:
                     time.sleep(self.retry_delay)
                     continue
                 else:
+                    self.logger.debug(f"Response text: {s.text}")
                     raise FailedRequestError(
                         request=f"{method} {path}: {req_params}",
                         message="Conflict. Could not decode JSON.",
