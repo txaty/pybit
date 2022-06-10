@@ -61,6 +61,7 @@ class _WebSocketManager:
 
         # Set initial state, initialize dictionary and connect.
         self._reset()
+        self.attempting_connection = False
 
     def _on_open(self):
         """
@@ -74,10 +75,20 @@ class _WebSocketManager:
         """
         self.callback(json.loads(message))
 
+    def is_connected(self):
+        try:
+            if self.ws.sock or not self.ws.sock.is_connected:
+                return True
+            else:
+                return False
+        except AttributeError:
+            return False
+
     def _connect(self, url):
         """
         Open websocket in a thread.
         """
+        self.attempting_connection = True
 
         # Set endpoint.
         subdomain = SUBDOMAIN_TESTNET if self.test else SUBDOMAIN_MAINNET
@@ -89,38 +100,40 @@ class _WebSocketManager:
         self.public_v2_websocket = True if url.endswith("v2") else False
         self.private_websocket = True if url.endswith("/spot/ws") else False
 
-        self.ws = websocket.WebSocketApp(
-            url=url,
-            on_message=lambda ws, msg: self._on_message(msg),
-            on_close=self._on_close(),
-            on_open=self._on_open(),
-            on_error=lambda ws, err: self._on_error(err)
-        )
-
-        # Setup the thread running WebSocketApp.
-        self.wst = threading.Thread(target=lambda: self.ws.run_forever(
-            ping_interval=self.ping_interval,
-            ping_timeout=self.ping_timeout
-        ))
-
-        # Configure as daemon; start.
-        self.wst.daemon = True
-        self.wst.start()
-
         # Attempt to connect for X seconds.
         retries = 10
-        while retries > 0 and (not self.ws.sock or not self.ws.sock.connected):
+        while retries > 0 and not self.is_connected():
+            self.ws = websocket.WebSocketApp(
+                url=url,
+                on_message=lambda ws, msg: self._on_message(msg),
+                on_close=self._on_close(),
+                on_open=self._on_open(),
+                on_error=lambda ws, err: self._on_error(err)
+            )
+
+            # Setup the thread running WebSocketApp.
+            self.wst = threading.Thread(target=lambda: self.ws.run_forever(
+                ping_interval=self.ping_interval,
+                ping_timeout=self.ping_timeout
+            ))
+
+            # Configure as daemon; start.
+            self.wst.daemon = True
+            self.wst.start()
+
             retries -= 1
             time.sleep(1)
 
-        # If connection was not successful, raise error.
-        if retries <= 0:
-            self.exit()
-            raise websocket.WebSocketTimeoutException("Connection failed.")
+            # If connection was not successful, raise error.
+            if retries <= 0:
+                self.exit()
+                raise websocket.WebSocketTimeoutException("Connection failed.")
 
         # If given an api_key, authenticate.
         if self.api_key and self.api_secret:
             self._auth()
+
+        self.attempting_connection = False
 
     def _auth(self):
         """
@@ -155,7 +168,7 @@ class _WebSocketManager:
             self.exit()
 
         # Reconnect.
-        if self.handle_error:
+        if self.handle_error and not self.attempting_connection:
             self._reset()
             self._connect(self.endpoint)
 
@@ -232,6 +245,10 @@ class _FuturesWebSocketManager(_WebSocketManager):
 
         subscription_args = prepare_subscription_args(symbol)
         self._check_callback_directory(subscription_args)
+
+        while not self.is_connected():
+            # Wait until the connection is open before subscribing.
+            time.sleep(0.1)
 
         self.ws.send(
             json.dumps({
