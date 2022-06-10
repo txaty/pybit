@@ -299,7 +299,7 @@ class _HTTPManager:
                 self.logger.debug(f"Response text: {s.text}")
                 raise FailedRequestError(
                     request=f"{method} {path}: {req_params}",
-                    message=f"{error_msg}",
+                    message=error_msg,
                     status_code=s.status_code,
                     time=dt.utcnow().strftime("%H:%M:%S")
                 )
