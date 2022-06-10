@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.2rc1] - 2022-06-10
+### Added
+- `is_connected()` function to `WebSocket` class so that you can check if your WSS connection is alive
+
+### Fixed
+- Bug where, upon WSS disconnection, pybit rapidly tries to re-establish the connection, which results in being banned by the CDN for malicious activity
+
 ## [2.2.2rc0] - 2022-06-10
 ### Modified
 - Improved HTTP error handling and logging to ease troubleshooting
