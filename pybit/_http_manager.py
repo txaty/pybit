@@ -82,6 +82,7 @@ class _HTTPManager:
         )
 
         # Add referral ID to header.
+        self.referral_id = referral_id
         if referral_id:
             self.client.headers.update({"Referer": referral_id})
 
@@ -168,6 +169,10 @@ class _HTTPManager:
 
         if query is None:
             query = {}
+
+        # Add agentSource (spot API's Referer).
+        if self.referral_id and method == "POST" and path.endswith("/spot/v1/order"):
+            query["agentSource"] = self.referral_id
 
         # Remove internal spot arg
         query.pop("spot", "")
