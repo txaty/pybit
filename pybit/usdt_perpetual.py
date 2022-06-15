@@ -828,14 +828,19 @@ class WebSocket(_FuturesWebSocketManager):
 
         self.ws_public = None
         self.ws_private = None
+        self.active_connections = []
         self.kwargs = kwargs
         self.public_kwargs = _make_public_kwargs(self.kwargs)
+
+    def is_connected(self):
+        return self._are_connections_connected(self.active_connections)
 
     def _ws_public_subscribe(self, topic, callback, symbol):
         if not self.ws_public:
             self.ws_public = _FuturesWebSocketManager(
                 ws_name, **self.public_kwargs)
             self.ws_public._connect(PUBLIC_WSS)
+            self.active_connections.append(self.ws_public)
         self.ws_public.subscribe(topic, callback, symbol)
 
     def _ws_private_subscribe(self, topic, callback):
@@ -843,6 +848,7 @@ class WebSocket(_FuturesWebSocketManager):
             self.ws_private = _FuturesWebSocketManager(
                 ws_name, **self.kwargs)
             self.ws_private._connect(PRIVATE_WSS)
+            self.active_connections.append(self.ws_private)
         self.ws_private.subscribe(topic, callback)
 
     def custom_topic_stream(self, wss_url, topic, callback):

@@ -84,6 +84,13 @@ class _WebSocketManager:
         except AttributeError:
             return False
 
+    @staticmethod
+    def _are_connections_connected(active_connections):
+        for connection in active_connections:
+            if not connection.is_connected():
+                return False
+        return True
+
     def _connect(self, url):
         """
         Open websocket in a thread.
