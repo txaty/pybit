@@ -48,6 +48,10 @@ class _WebSocketManager:
         #   }
         self.callback_directory = {}
 
+        # Record the subscriptions made so that we can resubscribe if the WSS
+        # connection is broken.
+        self.subscriptions = []
+
         # Set ping settings.
         self.ping_interval = ping_interval
         self.ping_timeout = ping_timeout
@@ -84,10 +88,27 @@ class _WebSocketManager:
         except AttributeError:
             return False
 
+    @staticmethod
+    def _are_connections_connected(active_connections):
+        for connection in active_connections:
+            if not connection.is_connected():
+                return False
+        return True
+
     def _connect(self, url):
         """
         Open websocket in a thread.
         """
+
+        def resubscribe_to_topics():
+            if not self.subscriptions:
+                # There are no subscriptions to resubscribe to, probably
+                # because this is a brand new WSS initialisation so there was
+                # no previous WSS connection.
+                return
+            for subscription_message in self.subscriptions:
+                self.ws.send(subscription_message)
+
         self.attempting_connection = True
 
         # Set endpoint.
@@ -132,6 +153,8 @@ class _WebSocketManager:
         # If given an api_key, authenticate.
         if self.api_key and self.api_secret:
             self._auth()
+
+        resubscribe_to_topics()
 
         self.attempting_connection = False
 
@@ -250,12 +273,12 @@ class _FuturesWebSocketManager(_WebSocketManager):
             # Wait until the connection is open before subscribing.
             time.sleep(0.1)
 
-        self.ws.send(
-            json.dumps({
+        subscription_message = json.dumps({
                 "op": "subscribe",
                 "args": subscription_args
             })
-        )
+        self.ws.send(subscription_message)
+        self.subscriptions.append(subscription_message)
         self._set_callback(topic, callback)
 
     def _initialise_local_data(self, topic):

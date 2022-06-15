@@ -392,14 +392,19 @@ class WebSocket(_SpotWebSocketManager):
         self.ws_public_v1 = None
         self.ws_public_v2 = None
         self.ws_private = None
+        self.active_connections = []
         self.kwargs = kwargs
         self.public_kwargs = _make_public_kwargs(self.kwargs)
+
+    def is_connected(self):
+        return self._are_connections_connected(self.active_connections)
 
     def _ws_public_v1_subscribe(self, topic, callback):
         if not self.ws_public_v1:
             self.ws_public_v1 = _SpotWebSocketManager(
                 ws_name, **self.public_kwargs)
             self.ws_public_v1._connect(PUBLIC_V1_WSS)
+            self.active_connections.append(self.ws_public_v1)
         self.ws_public_v1.subscribe(topic, callback)
 
     def _ws_public_v2_subscribe(self, topic, callback):
@@ -407,6 +412,7 @@ class WebSocket(_SpotWebSocketManager):
             self.ws_public_v2 = _SpotWebSocketManager(
                 ws_name, **self.public_kwargs)
             self.ws_public_v2._connect(PUBLIC_V2_WSS)
+            self.active_connections.append(self.ws_public_v2)
         self.ws_public_v2.subscribe(topic, callback)
 
     def _ws_private_subscribe(self, topic, callback):
@@ -414,6 +420,7 @@ class WebSocket(_SpotWebSocketManager):
             self.ws_private = _SpotWebSocketManager(
                 ws_name, **self.kwargs)
             self.ws_private._connect(PRIVATE_WSS)
+            self.active_connections.append(self.ws_private)
         self.ws_private.subscribe(topic, callback)
 
     def custom_topic_stream(self, topic, callback, wss_url):
