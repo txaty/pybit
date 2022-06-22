@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.2] - 2022-06-22
+- See below release candidates for further changes. TLDR: Improved WebSocket stability and reconnection logic.
+
+### Added
+- `retries` argument so that users specify how many times the WSS tries to reconnect upon disconnection
+  - The default is `10`. To retry forever, set it to `0`. pybit will wait 1 second between each retry.
+
+### Modified
+- Improved the logging around WSS disconnection
+
+
 ## [2.2.2rc2] - 2022-06-15
 ### Added
 - WSS topic resubscription so that when a WSS connection is dropped and then reconnected it should resume pushing the same data as before. Essentially, completes the expected functionality of reconnecting to the WSS.
