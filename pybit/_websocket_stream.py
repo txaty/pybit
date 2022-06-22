@@ -155,7 +155,9 @@ class _WebSocketManager:
             if not infinitely_reconnect and retries <= 0:
                 self.exit()
                 raise websocket.WebSocketTimeoutException(
-                    f"WebSocket {self.ws_name} connection failed.")
+                    f"WebSocket {self.ws_name} connection failed. Too many "
+                    f"connection attempts. pybit will "
+                    f"no longer try to reconnect.")
 
         logger.info(f"WebSocket {self.ws_name} connected")
 
