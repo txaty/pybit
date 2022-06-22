@@ -27,7 +27,7 @@ SPOT = "Spot"
 class _WebSocketManager:
     def __init__(self, callback_function, ws_name,
                  test, domain="", api_key=None, api_secret=None,
-                 ping_interval=30, ping_timeout=10,
+                 ping_interval=30, ping_timeout=10, retries=10,
                  restart_on_error=True, trace_logging=False):
 
         self.test = test
@@ -55,6 +55,7 @@ class _WebSocketManager:
         # Set ping settings.
         self.ping_interval = ping_interval
         self.ping_timeout = ping_timeout
+        self.retries = retries
 
         # Other optional data handling settings.
         self.handle_error = restart_on_error
@@ -122,8 +123,13 @@ class _WebSocketManager:
         self.private_websocket = True if url.endswith("/spot/ws") else False
 
         # Attempt to connect for X seconds.
-        retries = 10
-        while retries > 0 and not self.is_connected():
+        retries = self.retries
+        if retries == 0:
+            infinitely_reconnect = True
+        else:
+            infinitely_reconnect = False
+        while (infinitely_reconnect or retries > 0) and not self.is_connected():
+            logger.info(f"WebSocket {self.ws_name} attempting connection...")
             self.ws = websocket.WebSocketApp(
                 url=url,
                 on_message=lambda ws, msg: self._on_message(msg),
@@ -146,9 +152,12 @@ class _WebSocketManager:
             time.sleep(1)
 
             # If connection was not successful, raise error.
-            if retries <= 0:
+            if not infinitely_reconnect and retries <= 0:
                 self.exit()
-                raise websocket.WebSocketTimeoutException("Connection failed.")
+                raise websocket.WebSocketTimeoutException(
+                    f"WebSocket {self.ws_name} connection failed.")
+
+        logger.info(f"WebSocket {self.ws_name} connected")
 
         # If given an api_key, authenticate.
         if self.api_key and self.api_secret:
