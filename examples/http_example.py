@@ -174,17 +174,4 @@ session_auth = spot.HTTP(
 session_unauth = HTTP(endpoint="https://api.bybit.com")
 
 # Require spot endpoint (`spot` arg unnecessary)
-#session_auth.get_wallet_balance(coin="BTC")
-
-#session_auth.borrow_margin_loan(currency="USDT",qty="100")
-#session_auth.repay_margin_loan(currency="USDT",qty="100")
-#session_auth.query_borrowing_info()
-#session_auth.query_account_info()
-#session_auth.query_interest_quota(currency="USDT")
-#session_auth.query_repayment_history()
-
-#session_unauth.lt_asset_info(ltCode="BTC3L")
-#session_auth.lt_market_info(ltCode="BTC3L")
-#session_auth.lt_purchase(ltCode="BTC3L",ltAmount=100)
-#session_auth.lt_redeem(ltCode="BTC3L",ltQuantity=30.2268)
-#session_auth.lt_purchase_redemption_history()
+session_auth.get_wallet_balance(coin="BTC")
