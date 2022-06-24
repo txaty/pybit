@@ -96,10 +96,32 @@ place_conditional_order_bulk()
 cancel_conditional_order_bulk()
 close_position()
 
+Cross Margin Trading Methods:
+------------------------
+borrow_margin_loan()
+repay_margin_loan()
+query_borrowing_info()
+query_account_info()
+query_interest_quota()
+query_repayment_history()
+
+Leveraged Tokens Trading Methods:
+------------------------
+lt_asset_info()
+lt_market_info()
+lt_purchase()
+lt_redeem()
+lt_purchase_redemption_history()
+
+
+
+
 """
 
 # Import pybit and define the HTTP object.
 from pybit import HTTP  # supports inverse perp & futures, usdt perp, spot.
+from pybit.spot import HTTP
+from pprint import pprint
 """
 Some methods might need extra arguments due to the current Bybit APIs - 
 which are divided across market types. To ensure you're sending requests to 
@@ -149,7 +171,7 @@ session_auth = spot.HTTP(
 
 
 # Prefer spot endpoint via the `spot` arg
-session_unauth = HTTP(endpoint="https://api.bybit.com", spot=True)
+session_unauth = HTTP(endpoint="https://api.bybit.com")
 
 # Require spot endpoint (`spot` arg unnecessary)
 session_auth.get_wallet_balance(coin="BTC")
