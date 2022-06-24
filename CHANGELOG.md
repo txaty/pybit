@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2022-06-24
+### Added
+- `HTTP` methods for the spot API's [Leveraged Token](https://bybit-exchange.github.io/docs/spot/#t-ltinfos) and [Cross Margin](https://bybit-exchange.github.io/docs/spot/#t-crossmargintrading) endpoints
+- `agentSource` parameter when sending requests to place spot orders, which uses the `referral_id` argument, so that affiliates can track orders
+
+
 ## [2.2.3] - 2022-06-22
 - There was a packaging problem with the previous version. There are no changes compared with 2.2.2.
 
