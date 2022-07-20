@@ -27,7 +27,7 @@ SPOT = "Spot"
 class _WebSocketManager:
     def __init__(self, callback_function, ws_name,
                  test, domain="", api_key=None, api_secret=None,
-                 ping_interval=30, ping_timeout=10, retries=10,
+                 ping_interval=20, ping_timeout=10, retries=10,
                  restart_on_error=True, trace_logging=False):
 
         self.test = test
