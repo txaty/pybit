@@ -265,7 +265,7 @@ class _HTTPManager:
                         "X-BAPI-SIGN": signature,
                         "X-BAPI-SIGN-TYPE": "2",
                         "X-BAPI-TIMESTAMP": str(int(time.time() * 10 ** 3)),
-                        "X-BAPI-RECV-WINDOW": "5000"
+                        "X-BAPI-RECV-WINDOW": str(recv_window)
                     }
                     r = self.client.prepare_request(
                         requests.Request(method, path,
