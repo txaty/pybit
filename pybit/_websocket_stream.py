@@ -7,6 +7,7 @@ import logging
 import re
 import copy
 from . import HTTP
+from . import _helpers
 
 
 logger = logging.getLogger(__name__)
@@ -175,7 +176,7 @@ class _WebSocketManager:
         """
 
         # Generate expires.
-        expires = int((time.time() + 1) * 1000)
+        expires = _helpers.generate_timestamp() + 1000
 
         # Generate signature.
         _val = f"GET/realtime{expires}"
@@ -316,12 +317,12 @@ class _FuturesWebSocketManager(_WebSocketManager):
 
             # Delete.
             for entry in message["data"]["delete"]:
-                index = _find_index(self.data[topic], entry, "id")
+                index = _helpers.find_index(self.data[topic], entry, "id")
                 self.data[topic].pop(index)
 
             # Update.
             for entry in message["data"]["update"]:
-                index = _find_index(self.data[topic], entry, "id")
+                index = _helpers.find_index(self.data[topic], entry, "id")
                 self.data[topic][index] = entry
 
             # Insert.
@@ -488,12 +489,12 @@ class _USDCOptionsWebSocketManager(_USDCWebSocketManager):
 
             # Delete.
             for entry in message["data"]["delete"]:
-                index = _find_index(self.data[topic], entry, "price")
+                index = _helpers.find_index(self.data[topic], entry, "price")
                 self.data[topic].pop(index)
 
             # Update.
             for entry in message["data"]["update"]:
-                index = _find_index(self.data[topic], entry, "price")
+                index = _helpers.find_index(self.data[topic], entry, "price")
                 self.data[topic][index] = entry
 
             # Insert.
@@ -603,7 +604,7 @@ class _SpotWebSocketManager(_WebSocketManager):
                 for entry in entries:
                     # Delete.
                     if float(entry[1]) == 0:
-                        index = _find_index(
+                        index = _helpers.find_index(
                             self.data[topic][side], entry, 0)
                         self.data[topic][side].pop(index)
                         continue
@@ -621,7 +622,7 @@ class _SpotWebSocketManager(_WebSocketManager):
                         level[1] for level in self.data[topic][side] if
                         level[0] == entry[0])
                     if price_level_exists and qty_changed:
-                        index = _find_index(
+                        index = _helpers.find_index(
                             self.data[topic][side], entry, 0)
                         self.data[topic][side][index] = entry
                         continue
@@ -726,31 +727,3 @@ class _SpotWebSocketManager(_WebSocketManager):
             if topic in self.callback_directory:
                 raise Exception(f"You have already subscribed to this topic: "
                                 f"{topic}")
-
-
-def _identify_ws_method(input_wss_url, wss_dictionary):
-    """
-    This method matches the input_wss_url with a particular WSS method. This
-    helps ensure that, when subscribing to a custom topic, the topic
-    subscription message is sent down the correct WSS connection.
-    """
-    path = re.compile("(wss://)?([^/\s]+)(.*)")
-    input_wss_url_path = path.match(input_wss_url).group(3)
-    for wss_url, function_call in wss_dictionary.items():
-        wss_url_path = path.match(wss_url).group(3)
-        if input_wss_url_path == wss_url_path:
-            return function_call
-
-
-def _find_index(source, target, key):
-    """
-    Find the index in source list of the targeted ID.
-    """
-    return next(i for i, j in enumerate(source) if j[key] == target[key])
-
-
-def _make_public_kwargs(private_kwargs):
-    public_kwargs = copy.deepcopy(private_kwargs)
-    public_kwargs.pop("api_key", "")
-    public_kwargs.pop("api_secret", "")
-    return public_kwargs

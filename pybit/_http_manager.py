@@ -9,6 +9,7 @@ from datetime import datetime as dt
 
 from .exceptions import FailedRequestError, InvalidRequestError
 from . import VERSION
+from . import _helpers
 
 # Requests will use simplejson if available.
 try:
@@ -111,7 +112,7 @@ class _HTTPManager:
         # Append required parameters.
         params["api_key"] = api_key
         params["recv_window"] = recv_window
-        params["timestamp"] = int(time.time() * 10 ** 3)
+        params["timestamp"] = _helpers.generate_timestamp()
 
         # Sort dictionary alphabetically to create querystring.
         _val = "&".join(
@@ -140,7 +141,7 @@ class _HTTPManager:
         if api_key is None or api_secret is None:
             raise PermissionError("Authenticated endpoints require keys.")
         payload = json.dumps(params)
-        timestamp = int(time.time() * 10 ** 3)
+        timestamp = _helpers.generate_timestamp()
         param_str = str(timestamp) + api_key + str(recv_window) + payload
         hash = hmac.new(bytes(api_secret, "utf-8"), param_str.encode("utf-8"),
                         hashlib.sha256)
@@ -264,7 +265,7 @@ class _HTTPManager:
                         "X-BAPI-API-KEY": self.api_key,
                         "X-BAPI-SIGN": signature,
                         "X-BAPI-SIGN-TYPE": "2",
-                        "X-BAPI-TIMESTAMP": str(int(time.time() * 10 ** 3)),
+                        "X-BAPI-TIMESTAMP": str(_helpers.generate_timestamp()),
                         "X-BAPI-RECV-WINDOW": str(recv_window)
                     }
                     r = self.client.prepare_request(
