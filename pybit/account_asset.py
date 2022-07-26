@@ -201,15 +201,57 @@ class HTTP(_HTTPManager):
     def query_deposit_address(self, **kwargs):
         """
         Rules: Subaccount can not deposit
-         
+
         :param kwargs: See
             https://bybit-exchange.github.io/docs/account_asset/#t-deposit_addr_info.
         :returns: Request results as dictionary.
 
         """
         return self._submit_request(
+            method="POST",
+            path=self.endpoint + "/asset/v1/private/transferable-subs/save",
+            query=kwargs,
+            auth=True
+        )
+
+    def enable_universal_transfer(self, **kwargs):
+        """
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/account_asset/#t-enableuniversaltransfer.
+        :returns: Request results as dictionary.
+
+        """
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + "/asset/v1/private/transferable-subs/save",
+            query=kwargs,
+            auth=True
+        )
+
+    def create_universal_transfer(self, **kwargs):
+        """
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/account_asset/#t-createuniversaltransfer.
+        :returns: Request results as dictionary.
+
+        """
+        return self._submit_request(
+            method="POST",
+            path=self.endpoint + "/asset/v1/private/universal/transfer",
+            query=kwargs,
+            auth=True
+        )
+
+    def query_universal_transfer_list(self, **kwargs):
+        """
+        :param kwargs: See
+            https://bybit-exchange.github.io/docs/account_asset/#t-queryuniversetransferlist.
+        :returns: Request results as dictionary.
+
+        """
+        return self._submit_request(
             method="GET",
-            path=self.endpoint + "/asset/v1/private/deposit/address",
+            path=self.endpoint + "/asset/v1/private/universal/transfer/list",
             query=kwargs,
             auth=True
         )
