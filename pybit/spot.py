@@ -1,7 +1,7 @@
 from ._http_manager import _HTTPManager
 from ._websocket_stream import _SpotWebSocketManager
 from ._websocket_stream import SPOT
-from ._websocket_stream import _identify_ws_method, _make_public_kwargs
+from . import _helpers
 
 from concurrent.futures import ThreadPoolExecutor
 
@@ -595,7 +595,7 @@ class WebSocket(_SpotWebSocketManager):
         self.ws_private = None
         self.active_connections = []
         self.kwargs = kwargs
-        self.public_kwargs = _make_public_kwargs(self.kwargs)
+        self.public_kwargs = _helpers.make_public_kwargs(self.kwargs)
 
     def is_connected(self):
         return self._are_connections_connected(self.active_connections)
@@ -625,7 +625,7 @@ class WebSocket(_SpotWebSocketManager):
         self.ws_private.subscribe(topic, callback)
 
     def custom_topic_stream(self, topic, callback, wss_url):
-        subscribe = _identify_ws_method(
+        subscribe = _helpers.identify_ws_method(
             wss_url,
             {
                 PUBLIC_V1_WSS: self._ws_public_v1_subscribe,

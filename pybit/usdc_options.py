@@ -1,7 +1,7 @@
 from ._http_manager import _USDCHTTPManager
 from ._websocket_stream import _USDCOptionsWebSocketManager
 from ._websocket_stream import USDC_OPTIONS
-from ._websocket_stream import _identify_ws_method, _make_public_kwargs
+from . import _helpers
 
 
 ws_name = USDC_OPTIONS
@@ -320,7 +320,7 @@ class WebSocket(_USDCOptionsWebSocketManager):
         self.ws_private = None
         self.active_connections = []
         self.kwargs = kwargs
-        self.public_kwargs = _make_public_kwargs(self.kwargs)
+        self.public_kwargs = _helpers.make_public_kwargs(self.kwargs)
 
     def is_connected(self):
         return self._are_connections_connected(self.active_connections)
@@ -342,7 +342,7 @@ class WebSocket(_USDCOptionsWebSocketManager):
         self.ws_private.subscribe(topic, callback)
 
     def custom_topic_stream(self, wss_url, topic, callback):
-        subscribe = _identify_ws_method(
+        subscribe = _helpers.identify_ws_method(
             wss_url,
             {
                 PUBLIC_WSS: self._ws_public_subscribe,
