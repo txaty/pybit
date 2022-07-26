@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2022-07-26
+### Added
+- `HTTP` methods for account asset's [universal transfer API](https://bybit-exchange.github.io/docs/account_asset/#t-enableuniversaltransfer)
+
+### Fixed
+- USDC API to use the user's set `recv_window`
+
+### Modified
+- Did some internal code reorganisation
+
+
 ## [2.3.1] - 2022-07-20
 ### Modified
 - The `ping_interval` to 20 seconds to ensure WSS connection stability

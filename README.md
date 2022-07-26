@@ -250,6 +250,9 @@ Only available for the USDC API.
 | Query Transfer List            | `query_transfer_list()`            |
 | Query Subaccount Transfer List | `query_subaccount_transfer_list()` |
 | Query Subaccount List          | `query_subaccount_list()`          |
+| Enable Universal Transfer      | `enable_universal_transfer()`      |
+| Create Universal Transfer      | `create_universal_transfer()`      |
+| Query Universal Transfer List  | `query_universal_transfer_list()`  |
 | Query Supported Deposit List   | `query_supported_deposit_list()`   |
 | Query Deposit Records          | `query_deposit_records()`          |
 | Query Withdraw Records         | `query_withdraw_records()`         |
