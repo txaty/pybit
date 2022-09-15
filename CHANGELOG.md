@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0rc0] - 2022-09-15
+### Modified
+- The way in which the WebSocket handles errors, improving general usage and debugging (tracebacks) as well as clearly defining under which errors should the WebSocket attempt reconnection.
+
+### Fixed
+- USDC API's timestamp parameter to avoid the occasional ret_msg: error sign!
+
+
 ## [2.4.0] - 2022-07-26
 ### Added
 - `HTTP` methods for account asset's [universal transfer API](https://bybit-exchange.github.io/docs/account_asset/#t-enableuniversaltransfer)
