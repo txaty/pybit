@@ -197,6 +197,12 @@ class _WebSocketManager:
         """
         Exit on errors and raise exception, or attempt reconnect.
         """
+        if type(error).__name__ not in ["WebSocketConnectionClosedException",
+                                        "ConnectionResetError",
+                                        "WebSocketTimeoutException"]:
+            # Raises errors not related to websocket disconnection.
+            self.exit()
+            raise error
 
         if not self.exited:
             logger.error(f"WebSocket {self.ws_name} encountered error: {error}.")
