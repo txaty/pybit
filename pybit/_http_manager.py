@@ -130,7 +130,7 @@ class _HTTPManager:
             bytes(_val, "utf-8"), digestmod="sha256"
         ).hexdigest())
 
-    def _usdc_auth(self, params, recv_window):
+    def _usdc_auth(self, params, recv_window, timestamp):
         """
         Generates authentication signature per Bybit API specifications.
         """
@@ -141,7 +141,6 @@ class _HTTPManager:
         if api_key is None or api_secret is None:
             raise PermissionError("Authenticated endpoints require keys.")
         payload = json.dumps(params)
-        timestamp = _helpers.generate_timestamp()
         param_str = str(timestamp) + api_key + str(recv_window) + payload
         hash = hmac.new(bytes(api_secret, "utf-8"), param_str.encode("utf-8"),
                         hashlib.sha256)
@@ -209,9 +208,11 @@ class _HTTPManager:
             if auth:
                 if "usdc" in path:
                     # Prepare signature.
+                    usdc_timestamp = _helpers.generate_timestamp()
                     signature = self._usdc_auth(
                         params=query,
                         recv_window=recv_window,
+                        timestamp=usdc_timestamp,
                     )
                 else:
                     # Prepare signature.
@@ -265,7 +266,7 @@ class _HTTPManager:
                         "X-BAPI-API-KEY": self.api_key,
                         "X-BAPI-SIGN": signature,
                         "X-BAPI-SIGN-TYPE": "2",
-                        "X-BAPI-TIMESTAMP": str(_helpers.generate_timestamp()),
+                        "X-BAPI-TIMESTAMP": usdc_timestamp,
                         "X-BAPI-RECV-WINDOW": str(recv_window)
                     }
                     r = self.client.prepare_request(
