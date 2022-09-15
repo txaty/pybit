@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0rc0] - 2022-09-15
+### Modified
+- The way in which the WebSocket handles errors, improving general usage and debugging (tracebacks) as well as clearly defining under which errors should the WebSocket attempt reconnection.
+
+### Fixed
+- USDC API's timestamp parameter to avoid the occasional ret_msg: error sign!
+
+
 ## [2.4.0] - 2022-07-26
 ### Added
 - `HTTP` methods for account asset's [universal transfer API](https://bybit-exchange.github.io/docs/account_asset/#t-enableuniversaltransfer)
@@ -18,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.3.1] - 2022-07-20
 ### Modified
-- The `ping_interval` to 20 seconds to ensure WSS connection stability
+- The `ping_interval` to 20 seconds to ensure WebSocket connection stability
 
 ## [2.3.0] - 2022-06-24
 ### Added
@@ -34,27 +42,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - See below release candidates for further changes. TLDR: Improved WebSocket stability and reconnection logic.
 
 ### Added
-- `retries` argument so that users specify how many times the WSS tries to reconnect upon disconnection
+- `retries` argument so that users specify how many times the WebSocket tries to reconnect upon disconnection
   - The default is `10`. To retry forever, set it to `0`. pybit will wait 1 second between each retry.
 
 ### Modified
-- Improved the logging around WSS disconnection
+- Improved the logging around WebSocket disconnection
 
 
 ## [2.2.2rc2] - 2022-06-15
 ### Added
-- WSS topic resubscription so that when a WSS connection is dropped and then reconnected it should resume pushing the same data as before. Essentially, completes the expected functionality of reconnecting to the WSS.
+- WebSocket topic resubscription so that when a WebSocket connection is dropped and then reconnected it should resume pushing the same data as before. Essentially, completes the expected functionality of reconnecting to the WebSocket.
 
 ### Modified
-- `is_connected()` function to work with modules that utilise >1 WSS connections
+- `is_connected()` function to work with modules that utilise >1 WebSocket connections
 
 
 ## [2.2.2rc1] - 2022-06-10
 ### Added
-- `is_connected()` function to `WebSocket` class so that you can check if your WSS connection is alive
+- `is_connected()` function to `WebSocket` class so that you can check if your WebSocket connection is alive
 
 ### Fixed
-- Bug where, upon WSS disconnection, pybit rapidly tries to re-establish the connection, which results in being banned by the CDN for malicious activity
+- Bug where, upon WebSocket disconnection, pybit rapidly tries to re-establish the connection, which results in being banned by the CDN for malicious activity
 
 ## [2.2.2rc0] - 2022-06-10
 ### Modified
@@ -74,8 +82,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.2] - 2022-05-05
 ### Fixed
-- Initiating a WSS object without an `api_key` or `api_secret` for objects that create multiple WSS connections
-- Error thrown when processing WSS orderbook
+- Initiating a WebSocket object without an `api_key` or `api_secret` for objects that create multiple WebSocket connections
+- Error thrown when processing WebSocket orderbook
 
 ## [2.1.1] - 2022-04-30
 ### Added  
@@ -106,7 +114,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - the license to reflect the transition to bybit-exchange
 
 ### Fixed
-- `JSONDecodeError` when trying to subscribe to a spot private WSS stream
+- `JSONDecodeError` when trying to subscribe to a spot private WebSocket stream
 
 ## [2.0.0] - 2022-03-09
 ### Added
@@ -118,10 +126,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   
 ### Changed
 - `WebSocket` functionality to use callbacks instead of polling
-  - This means that instead of polling `ws.fetch()` for your latest websocket messages, you can now simply define a function (`my_callback_function`), and pass this as an argument upon subscribing to your chosen topic
+  - This means that instead of polling `ws.fetch()` for your latest WebSocket messages, you can now simply define a function (`my_callback_function`), and pass this as an argument upon subscribing to your chosen topic
     - see the [example file](https://github.com/bybit-exchange/pybit/blob/master/examples/websocket_example.py) for more information
   - This also removes the need to remember topic names and JSON formats, as you now directly call a class method to subscribe
-  - There is also a `custom_topic_stream` method which can be used if a new websocket topic has been released by Bybit, but it's not been added to `pybit` yet
+  - There is also a `custom_topic_stream` method which can be used if a new WebSocket topic has been released by Bybit, but it's not been added to `pybit` yet
 - `HTTP` classes will now instantiate a new HTTP session for each API (Spot (`spot.HTTP`), Account Asset (`account_asset.HTTP`), etc)
   - this is due to the restructuring of `pybit` to use class inheritance
 - Generally, the restructuring has allowed a great amount of segregation of the internal code to occur, which will allow for easier future development
@@ -146,7 +154,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `endpoint` arg to `get_active_order()`
 
 ### Fixed
-- A Websocket test case, by raising an exception instead of logging
+- A WebSocket test case, by raising an exception instead of logging
 
 ## [1.3.3] - 2021-12-24
 - Improve `get_risk_limit()`
@@ -155,8 +163,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `symbol` is not a required parameter for these endpoints, but pybit typically relies on it for deciding which endpoint to call
 
 ## [1.3.2] - 2021-11-05
-- Enabled websocket `fetch()` to handle multiple position sides from linear perp symbols
-- Fixed `fetch()` for private spot websocket
+- Enabled WebSocket `fetch()` to handle multiple position sides from linear perp symbols
+- Fixed `fetch()` for private spot WebSocket
 - Supported `endpoint` argument for `my_position()`, allowing the user to call this method without supplying a symbol
   - `symbol` is not a required parameter for these endpoints, but pybit typically relies on it for deciding which endpoint to call
 - See below release candidates for details.
@@ -171,7 +179,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.3.2rc0] - 2021-10-19
 ### Modified
-- Fixed the spot auth websocket to ensure subscriptions are not required
+- Fixed the spot auth WebSocket to ensure subscriptions are not required
 
 ## [1.3.1] - 2021-10-07
 ### Modified
@@ -181,7 +189,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Implemented the Spot API in `HTTP`
 - Implemented the Account Asset API in `HTTP`
-- Implemented the Spot websocket in `WebSocket`
+- Implemented the Spot WebSocket in `WebSocket`
 
 ## [1.2.1] - 2021-07-15
 ### Removed
@@ -206,7 +214,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added some logic to decide if there is 'order_book' in order book snapshot push for websocket
+- Added some logic to decide if there is 'order_book' in order book snapshot push for WebSocket
 
 ## [1.1.18] - 2020-03-23
 
@@ -220,7 +228,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed extra suffix definition block in `place_conditional_order`.
 - Changed logger functionality so that it won't overwrite user's preferred logging settings.
-- Fixed wrong number of arguments error inside websocket `on_message`, `on_close`, `on_open`, `on_error`.
+- Fixed wrong number of arguments error inside WebSocket `on_message`, `on_close`, `on_open`, `on_error`.
 
 ## [1.1.16] - 2020-03-21
 
