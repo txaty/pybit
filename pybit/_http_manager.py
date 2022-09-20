@@ -266,7 +266,7 @@ class _HTTPManager:
                         "X-BAPI-API-KEY": self.api_key,
                         "X-BAPI-SIGN": signature,
                         "X-BAPI-SIGN-TYPE": "2",
-                        "X-BAPI-TIMESTAMP": usdc_timestamp,
+                        "X-BAPI-TIMESTAMP": str(usdc_timestamp),
                         "X-BAPI-RECV-WINDOW": str(recv_window)
                     }
                     r = self.client.prepare_request(
