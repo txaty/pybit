@@ -255,7 +255,7 @@ class HTTP(_USDCHTTPManager):
         :returns: Request results as dictionary.
         """
 
-        suffix = "/perpetual/usdc/openapi/private/v1/query-transaction-log"
+        suffix = "/option/usdc/openapi/private/v1/query-transaction-log"
 
         return self._submit_request(
             method="POST",
