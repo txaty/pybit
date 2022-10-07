@@ -83,7 +83,7 @@ class _WebSocketManager:
 
     def is_connected(self):
         try:
-            if self.ws.sock or not self.ws.sock.is_connected:
+            if self.ws.sock.connected:
                 return True
             else:
                 return False
@@ -129,6 +129,7 @@ class _WebSocketManager:
             infinitely_reconnect = True
         else:
             infinitely_reconnect = False
+
         while (infinitely_reconnect or retries > 0) and not self.is_connected():
             logger.info(f"WebSocket {self.ws_name} attempting connection...")
             self.ws = websocket.WebSocketApp(
@@ -150,7 +151,9 @@ class _WebSocketManager:
             self.wst.start()
 
             retries -= 1
-            time.sleep(1)
+            while self.wst.is_alive():
+                if self.ws.sock and self.is_connected():
+                    break
 
             # If connection was not successful, raise error.
             if not infinitely_reconnect and retries <= 0:
@@ -159,6 +162,8 @@ class _WebSocketManager:
                     f"WebSocket {self.ws_name} connection failed. Too many "
                     f"connection attempts. pybit will "
                     f"no longer try to reconnect.")
+
+            time.sleep(1)
 
         logger.info(f"WebSocket {self.ws_name} connected")
 
