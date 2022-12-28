@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [3.0.0rc0] - 2022-12-28
+This version upgrades pybit to Bybit's version 3 (v3) APIs. Some old API modules are maintained due to lack of or only partial support in v3. Method names have been improved and conform to an intuitive standard.
+
+Future modules will be removed as Bybit's APIs are further unified so that they may be accessible from just one or two modules which should generally be divided by account type (eg, unified margin) rather than by market type (eg USDT perpetual).
+
+This is a pre-release, as indicated by the `rc` (release candidate) in the version number. Future versions may have breaking changes. An imminent major version of the Bybit API will introduce major changes before these v3 APIs make it to the production version.
+
+## Added
+- Bybit's main v3 HTTP and WebSocket APIs:
+  - `contract` – inverse perpetuals, inverse futures, USDT perpetuals, and USDC options
+  - `unified_margin` – USDT perpetuals and USDC options
+
+## Modified
+- `spot` to use v3 HTTP API and WebSocket APIs
+- `account_asset` to use v3 HTTP API
+
+## Removed
+- `usdt_perpetual` because it is now accessible via `contract` and `unified_margin`
+
+
 ## [2.4.1rc0] - 2022-10-07
 ## Modified
 - `is_connected()` and the WebSocket reconnection logic. 

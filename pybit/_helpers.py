@@ -36,3 +36,30 @@ def make_public_kwargs(private_kwargs):
     public_kwargs.pop("api_key", "")
     public_kwargs.pop("api_secret", "")
     return public_kwargs
+
+
+def are_connections_connected(active_connections):
+    for connection in active_connections:
+        if not connection.is_connected():
+            return False
+    return True
+
+
+def is_inverse_contract(symbol: str):
+    if re.search(r"(USD)([HMUZ]\d\d|$)", symbol):
+        return True
+
+
+def is_usdt_perpetual(symbol: str):
+    if symbol.endswith("USDT"):
+        return True
+
+
+def is_usdc_perpetual(symbol: str):
+    if symbol.endswith("USDC"):
+        return True
+
+
+def is_usdc_option(symbol: str):
+    if re.search(r"[A-Z]{3}-.*-[PC]$", symbol):
+        return True
