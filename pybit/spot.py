@@ -126,7 +126,7 @@ class HTTP(_V3HTTPManager):
     def get_trade_history(self, **kwargs):
         return self._submit_request(
             method="GET",
-            path=self.endpoint + "xxxx",
+            path=self.endpoint + "/spot/v3/private/my-trades",
             query=kwargs,
             auth=True
         )
@@ -134,7 +134,7 @@ class HTTP(_V3HTTPManager):
     def get_wallet_balance(self, **kwargs):
         return self._submit_request(
             method="GET",
-            path=self.endpoint + "GET",
+            path=self.endpoint + "/spot/v3/private/account",
             query=kwargs,
             auth=True
         )
