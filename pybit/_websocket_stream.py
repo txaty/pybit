@@ -30,11 +30,11 @@ UNIFIED_MARGIN = "Unified Margin"
 
 class _WebSocketManager:
     def __init__(self, callback_function, ws_name,
-                 test, domain="", api_key=None, api_secret=None,
+                 testnet, domain="", api_key=None, api_secret=None,
                  ping_interval=20, ping_timeout=10, retries=10,
                  restart_on_error=True, trace_logging=False):
 
-        self.test = test
+        self.testnet = testnet
         self.domain = domain
 
         # Set API keys.
@@ -110,7 +110,7 @@ class _WebSocketManager:
         self.attempting_connection = True
 
         # Set endpoint.
-        subdomain = SUBDOMAIN_TESTNET if self.test else SUBDOMAIN_MAINNET
+        subdomain = SUBDOMAIN_TESTNET if self.testnet else SUBDOMAIN_MAINNET
         domain = DOMAIN_MAIN if not self.domain else self.domain
         url = url.format(SUBDOMAIN=subdomain, DOMAIN=domain)
         self.endpoint = url
