@@ -155,9 +155,9 @@ class _WebSocketManager:
             if not infinitely_reconnect and retries <= 0:
                 self.exit()
                 raise websocket.WebSocketTimeoutException(
-                    f"WebSocket {self.ws_name} connection failed. Too many "
-                    f"connection attempts. pybit will "
-                    f"no longer try to reconnect.")
+                    f"WebSocket {self.ws_name} ({self.endpoint}) connection "
+                    f"failed. Too many connection attempts. pybit will no "
+                    f"longer try to reconnect.")
 
         logger.info(f"WebSocket {self.ws_name} connected")
 
@@ -204,7 +204,8 @@ class _WebSocketManager:
             raise error
 
         if not self.exited:
-            logger.error(f"WebSocket {self.ws_name} encountered error: {error}.")
+            logger.error(f"WebSocket {self.ws_name} ({self.endpoint}) "
+                         f"encountered error: {error}.")
             self.exit()
 
         # Reconnect.
@@ -378,7 +379,7 @@ class _V3WebSocketManager(_WebSocketManager):
         elif message.get("success") is False:
             raise Exception(
                 f"Authorization for {self.ws_name} failed. Please check your "
-                f"API keys and restart."
+                f"API keys and restart. Raw error: {message}"
             )
 
     def _process_subscription_message(self, message):
