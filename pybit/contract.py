@@ -175,12 +175,23 @@ class HTTP(_DerivativesHTTPManager):
 
 
 class WebSocket:
-    def __init__(self, **kwargs):
+    def __init__(
+            self,
+            testnet,
+            domain="",
+            api_key=None,
+            api_secret=None,
+            ping_interval=20,
+            ping_timeout=10,
+            retries=10,
+            restart_on_error=True,
+            trace_logging=False
+    ):
         self.ws_public = None
         self.ws_private = None
         self.active_connections = []
-        self.kwargs = kwargs
-        self.public_kwargs = _helpers.make_public_kwargs(self.kwargs)
+        self.args = _helpers.make_private_args(locals())
+        self.public_args = _helpers.make_public_kwargs(self.args)
 
     @staticmethod
     def _determine_public_ws_connection(symbol):
@@ -198,7 +209,7 @@ class WebSocket:
 
         if not self.ws_public:
             self.ws_public = \
-                _V3WebSocketManager(ws_name, **self.public_kwargs)
+                _V3WebSocketManager(ws_name, **self.public_args)
             self.ws_public._connect(ws_public)
             self.active_connections.append(self.ws_public)
         self.ws_public.subscribe(topic, callback, symbol)
@@ -206,7 +217,7 @@ class WebSocket:
     def _ws_private_subscribe(self, topic, callback):
         if not self.ws_private:
             self.ws_private = \
-                _V3WebSocketManager(ws_name, **self.kwargs)
+                _V3WebSocketManager(ws_name, **self.args)
             self.ws_private._connect(PRIVATE_CONTRACT_WS)
             self.active_connections.append(self.ws_private)
         self.ws_private.subscribe(topic, callback)

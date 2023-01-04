@@ -280,7 +280,7 @@ class WebSocket(ContractWebSocket):
     def _ws_private_subscribe(self, topic, callback):
         if not self.ws_private:
             self.ws_private = \
-                _V3WebSocketManager(ws_name, **self.kwargs)
+                _V3WebSocketManager(ws_name, **self.args)
             self.ws_private._connect(PRIVATE_UNIFIED_MARGIN_WS)
             self.active_connections.append(self.ws_private)
         self.ws_private.subscribe(topic, callback)

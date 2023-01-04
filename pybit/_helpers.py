@@ -31,6 +31,16 @@ def find_index(source, target, key):
     return next(i for i, j in enumerate(source) if j[key] == target[key])
 
 
+def make_private_args(args):
+    """
+    Exists to pass on the user's arguments to a lower-level class without
+    giving the user access to that classes attributes (ie, passing on args
+    without inheriting the parent class).
+    """
+    args.pop("self")
+    return args
+
+
 def make_public_kwargs(private_kwargs):
     public_kwargs = copy.deepcopy(private_kwargs)
     public_kwargs.pop("api_key", "")

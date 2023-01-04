@@ -273,17 +273,28 @@ class HTTP(_V3HTTPManager):
 
 
 class WebSocket:
-    def __init__(self, **kwargs):
+    def __init__(
+            self,
+            testnet,
+            domain="",
+            api_key=None,
+            api_secret=None,
+            ping_interval=20,
+            ping_timeout=10,
+            retries=10,
+            restart_on_error=True,
+            trace_logging=False
+    ):
         self.ws_public = None
         self.ws_private = None
         self.active_connections = []
-        self.kwargs = kwargs
-        self.public_kwargs = _helpers.make_public_kwargs(self.kwargs)
+        self.args = _helpers.make_private_args(locals())
+        self.public_args = _helpers.make_public_kwargs(self.args)
 
     def _ws_public_subscribe(self, topic, callback, symbol):
         if not self.ws_public:
             self.ws_public = _V3WebSocketManager(
-                ws_name, **self.public_kwargs)
+                ws_name, **self.public_args)
             self.ws_public._connect(PUBLIC_WSS)
             self.active_connections.append(self.ws_public)
         self.ws_public.subscribe(topic, callback, symbol)
@@ -291,7 +302,7 @@ class WebSocket:
     def _ws_private_subscribe(self, topic, callback):
         if not self.ws_private:
             self.ws_private = _V3WebSocketManager(
-                ws_name, **self.kwargs)
+                ws_name, **self.args)
             self.ws_private._connect(PRIVATE_WSS)
             self.active_connections.append(self.ws_private)
         self.ws_private.subscribe(topic, callback)
