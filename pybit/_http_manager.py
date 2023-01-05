@@ -730,49 +730,52 @@ class _V3HTTPManager:
         # with the response body.
         self.record_request_time = record_request_time
 
-    def _auth(self, method, params, recv_window, timestamp):
+    @staticmethod
+    def prepare_payload(method, parameters):
+        """
+        Prepares the request payload and validates parameter value types.
+        """
+
+        def cast_values():
+            string_params = [
+                "qty", "price", "triggerPrice", "takeProfit", "stopLoss"
+            ]
+            integer_params = [
+                "positionIdx"
+            ]
+            for key, value in parameters.items():
+                if key in string_params:
+                    if type(value) != str:
+                        parameters[key] = str(value)
+                elif key in integer_params:
+                    if type(value) != int:
+                        parameters[key] = int(value)
+
+        if method == "GET":
+            payload = "&".join(
+                [str(k) + "=" + str(v) for k, v in
+                 sorted(parameters.items()) if v is not None]
+            )
+            return payload
+        else:
+            cast_values()
+            return json.dumps(parameters)
+
+    def _auth(self, payload, recv_window, timestamp):
         """
         Generates authentication signature per Bybit API specifications.
         """
-
-        def prepare_payload(parameters):
-            """
-            Prepares the request payload and validates parameter value types.
-            """
-            def cast_values():
-                string_params = [
-                    "qty", "price", "triggerPrice", "takeProfit", "stopLoss"
-                ]
-                integer_params = [
-                    "positionIdx"
-                ]
-                for key, value in parameters.items():
-                    if key in string_params:
-                        if type(value) != str:
-                            parameters[key] = str(value)
-                    elif key in integer_params:
-                        if type(value) != int:
-                            parameters[key] = int(value)
-
-            cast_values()
-            return json.dumps(parameters)
 
         api_key = self.api_key
         api_secret = self.api_secret
 
         if api_key is None or api_secret is None:
             raise PermissionError("Authenticated endpoints require keys.")
-        if method == "GET":
-            payload = "&".join(
-                [str(k) + "=" + str(v) for k, v in
-                 sorted(params.items()) if v is not None]
-            )
-        else:
-            payload = prepare_payload(params)
+
         param_str = str(timestamp) + api_key + str(recv_window) + payload
         hash = hmac.new(bytes(api_secret, "utf-8"), param_str.encode("utf-8"),
                         hashlib.sha256)
-        return hash.hexdigest(), payload
+        return hash.hexdigest()
 
     @staticmethod
     def _verify_string(params, key):
@@ -828,18 +831,17 @@ class _V3HTTPManager:
 
             retries_remaining = f"{retries_attempted} retries remain."
 
+            req_params = self.prepare_payload(method, query)
+
             # Authenticate if we are using a private endpoint.
             if auth:
                 # Prepare signature.
                 timestamp = _helpers.generate_timestamp()
-                signature, req_params = self._auth(
-                    method=method,
-                    params=query,
+                signature = self._auth(
+                    payload=req_params,
                     recv_window=recv_window,
                     timestamp=timestamp,
                 )
-
-            if auth:
                 headers = {
                     "Content-Type": "application/json",
                     "X-BAPI-API-KEY": self.api_key,

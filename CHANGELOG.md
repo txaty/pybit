@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [3.0.0rc2] - 2023-01-05
+### Fixed
+- Failure to pass request parameters in certain methods
+
+
 ## [3.0.0rc1] - 2023-01-04
 ### Fixed
 - Wrong endpoint paths in `spot`
@@ -14,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored WebSocket's `test` arg to `testnet`
 - Hardcoded WebSocket arguments into the child class the user accesses – meaning the user can easily see them, and IDEs should autocomplete them
   - (For v3 WebSockets only: `contract`, `unified_margin`, `spot`)
+
 
 ## [3.0.0rc0] - 2022-12-28
 This version upgrades pybit to Bybit's version 3 (v3) APIs. Some old API modules are maintained due to lack of or only partial support in v3. Method names have been improved and conform to an intuitive standard.
