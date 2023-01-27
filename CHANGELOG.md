@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [3.0.0rc3] - 2023-01-27
+### Fixed
+- Failure to resubscribe to private spot topics when reconnecting WebSocket
+
+### Modified
+- WebSocket error handling
+
 ## [3.0.0rc2] - 2023-01-05
 ### Fixed
 - Failure to pass request parameters in certain methods
