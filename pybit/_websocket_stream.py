@@ -376,7 +376,7 @@ class _V3WebSocketManager(_WebSocketManager):
             logger.debug(f"Authorization for {self.ws_name} successful.")
             self.auth = True
         # If we get unsuccessful auth, notify user.
-        elif message.get("success") is False:
+        elif message.get("success") is False or message.get("type") == "error":
             raise Exception(
                 f"Authorization for {self.ws_name} failed. Please check your "
                 f"API keys and restart. Raw error: {message}"
