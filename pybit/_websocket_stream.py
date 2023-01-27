@@ -104,8 +104,14 @@ class _WebSocketManager:
                 # because this is a brand new WSS initialisation so there was
                 # no previous WSS connection.
                 return
-            for subscription_message in self.subscriptions:
-                self.ws.send(subscription_message)
+
+            if type(self.subscriptions) == list:  # v1/2
+                for subscription_message in self.subscriptions:
+                    self.ws.send(subscription_message)
+            else:  # v3, dict
+                # Stored as a dict for those v3 WS which use a req_id
+                for req_id, subscription_message in self.subscriptions.items():
+                    self.ws.send(subscription_message)
 
         self.attempting_connection = True
 
