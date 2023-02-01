@@ -26,6 +26,7 @@ USDC_OPTIONS = "USDC Options"
 SPOT = "Spot"
 CONTRACT = "Contract"
 UNIFIED_MARGIN = "Unified Margin"
+COPY_TRADING = "Copy Trading"
 
 
 class _WebSocketManager:
@@ -494,7 +495,9 @@ class _FuturesWebSocketManager(_WebSocketManager):
         super().__init__(callback_function, ws_name, **kwargs)
 
         self.private_topics = ["position", "execution", "order", "stop_order",
-                               "wallet"]
+                               "wallet", "copyTradePosition",
+                               "copyTradeExecution", "copyTradeOrder",
+                               "copyTradeWallet"]
 
         self.symbol_wildcard = "*"
         self.symbol_separator = "|"
