@@ -146,8 +146,7 @@ class _WebSocketManager:
             # Setup the thread running WebSocketApp.
             self.wst = threading.Thread(target=lambda: self.ws.run_forever(
                 ping_interval=self.ping_interval,
-                ping_timeout=self.ping_timeout,
-                ping_payload=json.dumps({"op": "ping"})
+                ping_timeout=self.ping_timeout
             ))
 
             # Configure as daemon; start.
