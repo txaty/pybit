@@ -60,6 +60,7 @@ class _WebSocketManager:
         # Set ping settings.
         self.ping_interval = ping_interval
         self.ping_timeout = ping_timeout
+        self.custom_ping_message = json.dumps({"op": "ping"})
         self.retries = retries
 
         # Other optional data handling settings.
@@ -83,7 +84,11 @@ class _WebSocketManager:
         """
         Parse incoming messages.
         """
-        self.callback(json.loads(message))
+        message = json.loads(message)
+        if self._is_custom_pong(message):
+            return
+        else:
+            self.callback(message)
 
     def is_connected(self):
         try:
@@ -141,6 +146,7 @@ class _WebSocketManager:
                 on_close=lambda ws, *args: self._on_close(),
                 on_open=lambda ws, *args: self._on_open(),
                 on_error=lambda ws, err: self._on_error(err),
+                on_pong=lambda ws, *args: self._on_pong(),
             )
 
             # Setup the thread running WebSocketApp.
@@ -225,6 +231,29 @@ class _WebSocketManager:
         Log WS close.
         """
         logger.debug(f"WebSocket {self.ws_name} closed.")
+
+    def _on_pong(self):
+        """
+        Sends a custom ping upon the receipt of the pong frame.
+
+        The websocket library will automatically send ping frames. However, to
+        ensure the connection to Bybit stays open, we need to send a custom
+        ping message separately from this. When we receive the response to the
+        ping frame, this method is called, and we will send the custom ping as
+        a normal OPCODE_TEXT message and not an OPCODE_PING.
+        """
+        self._send_custom_ping()
+
+    def _send_custom_ping(self):
+        self.ws.send(self.custom_ping_message)
+
+    @staticmethod
+    def _is_custom_pong(message):
+        """
+        Referring to OPCODE_TEXT pongs from Bybit, not OPCODE_PONG.
+        """
+        if message.get("ret_msg") == "pong" or message.get("op") == "pong":
+            return True
 
     def _reset(self):
         """
