@@ -138,9 +138,9 @@ class _WebSocketManager:
             self.ws = websocket.WebSocketApp(
                 url=url,
                 on_message=lambda ws, msg: self._on_message(msg),
-                on_close=self._on_close(),
-                on_open=self._on_open(),
-                on_error=lambda ws, err: self._on_error(err)
+                on_close=lambda ws, *args: self._on_close(),
+                on_open=lambda ws, *args: self._on_open(),
+                on_error=lambda ws, err: self._on_error(err),
             )
 
             # Setup the thread running WebSocketApp.
