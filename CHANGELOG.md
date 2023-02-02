@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [3.0.0rc5] - 2023-02-02
+### Added
+- `copy_trading` module for the [Copy Trading](https://bybit-exchange.github.io/docs/copy_trading/) HTTP API and WebSocket
+
+### Modified
+- `requirements.txt` to require the latest version of `websocket-client`: `1.5.0`.
+  - If you are facing any problems with the WebSocket, ensure you upgrade to the right version of the dependency and try again. Upgrade like so: `python -m pip install -r requirements.txt`
+- WebSocket pings (again)
+
+
 ## [3.0.0rc4] - 2023-01-31
 ### Modified
 - How WebSocket pings are sent in an effort to keep connections open longer
