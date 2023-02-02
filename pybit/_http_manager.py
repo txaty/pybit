@@ -384,6 +384,7 @@ class _HTTPManager:
                     pass
 
                 else:
+                    logging.error(f"Request failed. Response: {s_json}")
                     raise InvalidRequestError(
                         request=f"{method} {path}: {req_params}",
                         message=s_json[ret_msg],
