@@ -15,16 +15,17 @@ https://github.com/bybit-exchange/pybit
 
 """
 
-import time
 import hmac
 import json
 import logging
+import time
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime as dt
+
 import requests
 
-from datetime import datetime as dt
-from concurrent.futures import ThreadPoolExecutor
-
 from .exceptions import FailedRequestError, InvalidRequestError
+from .market_v5 import HTTP
 
 # Requests will use simplejson if available.
 try:
@@ -114,7 +115,7 @@ class HTTP:
         self.logger = logging.getLogger(__name__)
 
         if len(logging.root.handlers) == 0:
-            #no handler on root logger set -> we add handler just for this logger to not mess with custom logic from outside
+            # no handler on root logger set -> we add handler just for this logger to not mess with custom logic from outside
             handler = logging.StreamHandler()
             handler.setFormatter(logging.Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                                                    datefmt='%Y-%m-%d %H:%M:%S'
@@ -1579,9 +1580,11 @@ class HTTP:
 
         # Submit a market order against each open position for the same qty.
         return self.place_active_order_bulk(orders)
+
     '''
     Below are methods under https://bybit-exchange.github.io/docs/account_asset
     '''
+
     def create_internal_transfer(self, **kwargs):
         """
         Create internal transfer.
@@ -1591,8 +1594,8 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        suffix="/asset/v1/private/transfer"
-        if self._verify_string(kwargs,'amount'):
+        suffix = "/asset/v1/private/transfer"
+        if self._verify_string(kwargs, 'amount'):
             return self._submit_request(
                 method='POST',
                 path=self.endpoint + suffix,
@@ -1611,7 +1614,7 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        suffix="/asset/v1/private/sub-member/transfer"
+        suffix = "/asset/v1/private/sub-member/transfer"
 
         if self._verify_string(kwargs, 'amount'):
             return self._submit_request(
@@ -1632,7 +1635,7 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        suffix="/asset/v1/private/transfer/list"
+        suffix = "/asset/v1/private/transfer/list"
 
         return self._submit_request(
             method='GET',
@@ -1648,7 +1651,7 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        suffix="/asset/v1/private/sub-member/member-ids"
+        suffix = "/asset/v1/private/sub-member/member-ids"
 
         return self._submit_request(
             method='GET',
@@ -1657,7 +1660,7 @@ class HTTP:
             auth=True
         )
 
-    def query_subaccount_transfer_list(self,**kwargs):
+    def query_subaccount_transfer_list(self, **kwargs):
         """
         Create internal transfer.
 
@@ -1666,7 +1669,7 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        suffix="/asset/v1/private/sub-member/transfer/list"
+        suffix = "/asset/v1/private/sub-member/transfer/list"
 
         return self._submit_request(
             method='GET',
@@ -1674,6 +1677,7 @@ class HTTP:
             query=kwargs,
             auth=True
         )
+
     '''
     Internal methods; signature and request submission.
     For more information about the request signature, see
@@ -1719,7 +1723,7 @@ class HTTP:
             bytes(_val, 'utf-8'), digestmod='sha256'
         ).hexdigest())
 
-    def _verify_string(self,params,key):
+    def _verify_string(self, params, key):
         if key in params:
             if not isinstance(params[key], str):
                 return False
@@ -1834,9 +1838,9 @@ class HTTP:
 
             # If requests fires an error, retry.
             except (
-                requests.exceptions.ReadTimeout,
-                requests.exceptions.SSLError,
-                requests.exceptions.ConnectionError
+                    requests.exceptions.ReadTimeout,
+                    requests.exceptions.SSLError,
+                    requests.exceptions.ConnectionError
             ) as e:
                 if self.force_retry:
                     self.logger.error(f'{e}. {retries_remaining}')
@@ -1918,4 +1922,3 @@ class HTTP:
                     )
             else:
                 return s_json
-

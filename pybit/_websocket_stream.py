@@ -27,6 +27,7 @@ SPOT = "Spot"
 CONTRACT = "Contract"
 UNIFIED_MARGIN = "Unified Margin"
 COPY_TRADING = "Copy Trading"
+MARKET = "Market"
 
 
 class _WebSocketManager:
