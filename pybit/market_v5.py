@@ -10,7 +10,7 @@ class HTTP(_V5HTTPManager):
             method="GET",
             path=self.endpoint + "/v5/market/kline",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def query_mark_price_kline(self, **kwargs):
@@ -18,7 +18,7 @@ class HTTP(_V5HTTPManager):
             method="GET",
             path=self.endpoint + "/v5/market/mark-price-kline",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def query_index_price_kline(self, **kwargs):
@@ -26,7 +26,7 @@ class HTTP(_V5HTTPManager):
             method="GET",
             path=self.endpoint + "/v5/market/index-price-kline",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def query_premium_index_price_kline(self, **kwargs):
@@ -34,7 +34,5 @@ class HTTP(_V5HTTPManager):
             method="GET",
             path=self.endpoint + "/v5/market/premium-index-price-kline",
             query=kwargs,
-            auth=True
+            auth=True,
         )
-
-

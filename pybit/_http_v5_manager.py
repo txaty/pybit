@@ -13,15 +13,27 @@ import requests
 
 from . import _helpers, InvalidRequestError, FailedRequestError
 
-VERSION = '3.0.0rc5'
+VERSION = "3.0.0rc5"
 
 
 class _V5HTTPManager:
-    def __init__(self, endpoint=None, api_key=None, api_secret=None,
-                 logging_level=logging.INFO, log_requests=False,
-                 request_timeout=10, recv_window=5000, force_retry=False,
-                 retry_codes=None, ignore_codes=None, max_retries=3,
-                 retry_delay=3, referral_id=None, record_request_time=False):
+    def __init__(
+        self,
+        endpoint=None,
+        api_key=None,
+        api_secret=None,
+        logging_level=logging.INFO,
+        log_requests=False,
+        request_timeout=10,
+        recv_window=5000,
+        force_retry=False,
+        retry_codes=None,
+        ignore_codes=None,
+        max_retries=3,
+        retry_delay=3,
+        referral_id=None,
+        record_request_time=False,
+    ):
         """Initializes the HTTP class."""
 
         # Set the endpoint.
@@ -37,10 +49,12 @@ class _V5HTTPManager:
         if len(logging.root.handlers) == 0:
             # no handler on root logger set -> we add handler just for this logger to not mess with custom logic from outside
             handler = logging.StreamHandler()
-            handler.setFormatter(logging.Formatter(fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-                                                   datefmt="%Y-%m-%d %H:%M:%S"
-                                                   )
-                                 )
+            handler.setFormatter(
+                logging.Formatter(
+                    fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                    datefmt="%Y-%m-%d %H:%M:%S",
+                )
+            )
             handler.setLevel(logging_level)
             self.logger.addHandler(handler)
 
@@ -96,12 +110,8 @@ class _V5HTTPManager:
         """
 
         def cast_values():
-            string_params = [
-                "qty", "price", "triggerPrice", "takeProfit", "stopLoss"
-            ]
-            integer_params = [
-                "positionIdx"
-            ]
+            string_params = ["qty", "price", "triggerPrice", "takeProfit", "stopLoss"]
+            integer_params = ["positionIdx"]
             for key, value in parameters.items():
                 if key in string_params:
                     if type(value) != str:
@@ -112,8 +122,11 @@ class _V5HTTPManager:
 
         if method == "GET":
             payload = "&".join(
-                [str(k) + "=" + str(v) for k, v in
-                 sorted(parameters.items()) if v is not None]
+                [
+                    str(k) + "=" + str(v)
+                    for k, v in sorted(parameters.items())
+                    if v is not None
+                ]
             )
             return payload
         else:
@@ -132,8 +145,9 @@ class _V5HTTPManager:
             raise PermissionError("Authenticated endpoints require keys.")
 
         param_str = str(timestamp) + api_key + str(recv_window) + payload
-        hash = hmac.new(bytes(api_secret, "utf-8"), param_str.encode("utf-8"),
-                        hashlib.sha256)
+        hash = hmac.new(
+            bytes(api_secret, "utf-8"), param_str.encode("utf-8"), hashlib.sha256
+        )
         return hash.hexdigest()
 
     @staticmethod
@@ -185,7 +199,7 @@ class _V5HTTPManager:
                     request=f"{method} {path}: {req_params}",
                     message="Bad Request. Retries exceeded maximum.",
                     status_code=400,
-                    time=dt.utcnow().strftime("%H:%M:%S")
+                    time=dt.utcnow().strftime("%H:%M:%S"),
                 )
 
             retries_remaining = f"{retries_attempted} retries remain."
@@ -207,7 +221,7 @@ class _V5HTTPManager:
                     "X-BAPI-SIGN": signature,
                     "X-BAPI-SIGN-TYPE": "2",
                     "X-BAPI-TIMESTAMP": str(timestamp),
-                    "X-BAPI-RECV-WINDOW": str(recv_window)
+                    "X-BAPI-RECV-WINDOW": str(recv_window),
                 }
             else:
                 headers = {}
@@ -220,25 +234,22 @@ class _V5HTTPManager:
                         f"Headers: {headers}"
                     )
                 else:
-                    self.logger.debug(
-                        f"Request -> {method} {path}. Headers: {headers}"
-                    )
+                    self.logger.debug(f"Request -> {method} {path}. Headers: {headers}")
 
             if method == "GET":
                 if req_params:
                     r = self.client.prepare_request(
                         requests.Request(
-                            method, path + f"?{req_params}", headers=headers)
+                            method, path + f"?{req_params}", headers=headers
+                        )
                     )
                 else:
                     r = self.client.prepare_request(
-                        requests.Request(
-                            method, path, headers=headers)
+                        requests.Request(method, path, headers=headers)
                     )
             else:
                 r = self.client.prepare_request(
-                    requests.Request(
-                        method, path, data=req_params, headers=headers)
+                    requests.Request(method, path, data=req_params, headers=headers)
                 )
 
             # Attempt the request.
@@ -247,9 +258,9 @@ class _V5HTTPManager:
 
             # If requests fires an error, retry.
             except (
-                    requests.exceptions.ReadTimeout,
-                    requests.exceptions.SSLError,
-                    requests.exceptions.ConnectionError
+                requests.exceptions.ReadTimeout,
+                requests.exceptions.SSLError,
+                requests.exceptions.ConnectionError,
             ) as e:
                 if self.force_retry:
                     self.logger.error(f"{e}. {retries_remaining}")
@@ -269,7 +280,7 @@ class _V5HTTPManager:
                     request=f"{method} {path}: {req_params}",
                     message=error_msg,
                     status_code=s.status_code,
-                    time=dt.utcnow().strftime("%H:%M:%S")
+                    time=dt.utcnow().strftime("%H:%M:%S"),
                 )
 
             # Convert response to dictionary, or raise if requests error.
@@ -288,7 +299,7 @@ class _V5HTTPManager:
                         request=f"{method} {path}: {req_params}",
                         message="Conflict. Could not decode JSON.",
                         status_code=409,
-                        time=dt.utcnow().strftime("%H:%M:%S")
+                        time=dt.utcnow().strftime("%H:%M:%S"),
                     )
 
             ret_code = "retCode"
@@ -298,9 +309,7 @@ class _V5HTTPManager:
             if s_json[ret_code]:
 
                 # Generate error message.
-                error_msg = (
-                    f"{s_json[ret_msg]} (ErrCode: {s_json[ret_code]})"
-                )
+                error_msg = f"{s_json[ret_msg]} (ErrCode: {s_json[ret_code]})"
 
                 # Set default retry delay.
                 err_delay = self.retry_delay
@@ -323,9 +332,7 @@ class _V5HTTPManager:
 
                         # Calculate how long we need to wait.
                         limit_reset = s_json["rate_limit_reset_ms"] / 1000
-                        reset_str = time.strftime(
-                            "%X", time.localtime(limit_reset)
-                        )
+                        reset_str = time.strftime("%X", time.localtime(limit_reset))
                         err_delay = int(limit_reset) - int(time.time())
                         error_msg = (
                             f"Ratelimit will reset at {reset_str}. "
@@ -345,7 +352,7 @@ class _V5HTTPManager:
                         request=f"{method} {path}: {req_params}",
                         message=s_json[ret_msg],
                         status_code=s_json[ret_code],
-                        time=dt.utcnow().strftime("%H:%M:%S")
+                        time=dt.utcnow().strftime("%H:%M:%S"),
                     )
             else:
                 if self.record_request_time:
@@ -355,14 +362,10 @@ class _V5HTTPManager:
 
     def get_server_time(self):
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + "/v5/public/time",
-            auth=False
+            method="GET", path=self.endpoint + "/v5/public/time", auth=False
         )
 
     def get_api_key_info(self):
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + "/user/v5/private/query-api",
-            auth=True
+            method="GET", path=self.endpoint + "/user/v5/private/query-api", auth=True
         )

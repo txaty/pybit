@@ -7,7 +7,7 @@ def generate_timestamp():
     """
     Return a millisecond integer timestamp.
     """
-    return int(time.time() * 10 ** 3)
+    return int(time.time() * 10**3)
 
 
 def identify_ws_method(input_wss_url, wss_dictionary):

@@ -34,7 +34,7 @@ except ImportError:
     from json.decoder import JSONDecodeError
 
 # Versioning.
-VERSION = '3.0.0rc5'
+VERSION = "3.0.0rc5"
 
 
 class HTTP:
@@ -97,16 +97,28 @@ class HTTP:
 
     """
 
-    def __init__(self, endpoint=None, api_key=None, api_secret=None,
-                 logging_level=logging.INFO, log_requests=False,
-                 request_timeout=10, recv_window=5000, force_retry=False,
-                 retry_codes=None, ignore_codes=None, max_retries=3,
-                 retry_delay=3, referral_id=None, spot=False):
+    def __init__(
+        self,
+        endpoint=None,
+        api_key=None,
+        api_secret=None,
+        logging_level=logging.INFO,
+        log_requests=False,
+        request_timeout=10,
+        recv_window=5000,
+        force_retry=False,
+        retry_codes=None,
+        ignore_codes=None,
+        max_retries=3,
+        retry_delay=3,
+        referral_id=None,
+        spot=False,
+    ):
         """Initializes the HTTP class."""
 
         # Set the endpoint.
         if endpoint is None:
-            self.endpoint = 'https://api.bybit.com'
+            self.endpoint = "https://api.bybit.com"
         else:
             self.endpoint = endpoint
 
@@ -117,21 +129,23 @@ class HTTP:
         if len(logging.root.handlers) == 0:
             # no handler on root logger set -> we add handler just for this logger to not mess with custom logic from outside
             handler = logging.StreamHandler()
-            handler.setFormatter(logging.Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                                                   datefmt='%Y-%m-%d %H:%M:%S'
-                                                   )
-                                 )
+            handler.setFormatter(
+                logging.Formatter(
+                    fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                    datefmt="%Y-%m-%d %H:%M:%S",
+                )
+            )
             handler.setLevel(logging_level)
             self.logger.addHandler(handler)
 
         self.logger.warning(
-            'This HTTP class is maintained for compatibility purposes. You '
-            'should prefer importing market-specific classes, like so: '
-            'from pybit.inverse_perpetual import HTTP; '
-            'from pybit.spot import HTTP'
+            "This HTTP class is maintained for compatibility purposes. You "
+            "should prefer importing market-specific classes, like so: "
+            "from pybit.inverse_perpetual import HTTP; "
+            "from pybit.spot import HTTP"
         )
 
-        self.logger.debug('Initializing HTTP session.')
+        self.logger.debug("Initializing HTTP session.")
         self.log_requests = log_requests
 
         # Set API keys.
@@ -161,15 +175,15 @@ class HTTP:
         self.client = requests.Session()
         self.client.headers.update(
             {
-                'User-Agent': 'pybit-' + VERSION,
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
+                "User-Agent": "pybit-" + VERSION,
+                "Content-Type": "application/json",
+                "Accept": "application/json",
             }
         )
 
         # Add referral ID to header.
         if referral_id:
-            self.client.headers.update({'Referer': referral_id})
+            self.client.headers.update({"Referer": referral_id})
 
         # If True, calls spot endpoints rather than futures endpoints.
         self.spot = spot
@@ -177,7 +191,7 @@ class HTTP:
     def _exit(self):
         """Closes the request session."""
         self.client.close()
-        self.logger.debug('HTTP session closed.')
+        self.logger.debug("HTTP session closed.")
 
     def orderbook(self, **kwargs):
         """
@@ -188,14 +202,12 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if self.spot is True or kwargs.get('spot', '') is True:
-            suffix = '/spot/quote/v1/depth'
+        if self.spot is True or kwargs.get("spot", "") is True:
+            suffix = "/spot/quote/v1/depth"
         else:
-            suffix = '/v2/public/orderBook/L2'
+            suffix = "/v2/public/orderBook/L2"
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs
+            method="GET", path=self.endpoint + suffix, query=kwargs
         )
 
     def merged_orderbook(self, **kwargs):
@@ -208,9 +220,9 @@ class HTTP:
         """
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + '/spot/quote/v1/depth/merged',
-            query=kwargs
+            method="GET",
+            path=self.endpoint + "/spot/quote/v1/depth/merged",
+            query=kwargs,
         )
 
     def query_kline(self, **kwargs):
@@ -224,20 +236,18 @@ class HTTP:
 
         # Replace query param 'from_time' since 'from' keyword is reserved.
         # Temporary workaround until Bybit updates official request params
-        if 'from_time' in kwargs:
-            kwargs['from'] = kwargs.pop('from_time')
+        if "from_time" in kwargs:
+            kwargs["from"] = kwargs.pop("from_time")
 
-        if self.spot is True or kwargs.get('spot', '') is True:
-            suffix = '/spot/quote/v1/kline'
-        elif kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/public/linear/kline'
+        if self.spot is True or kwargs.get("spot", "") is True:
+            suffix = "/spot/quote/v1/kline"
+        elif kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/public/linear/kline"
         else:
-            suffix = '/v2/public/kline/list'
+            suffix = "/v2/public/kline/list"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs
+            method="GET", path=self.endpoint + suffix, query=kwargs
         )
 
     def latest_information_for_symbol(self, **kwargs):
@@ -249,14 +259,12 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if self.spot is True or kwargs.get('spot', '') is True:
-            suffix = '/spot/quote/v1/ticker/24hr'
+        if self.spot is True or kwargs.get("spot", "") is True:
+            suffix = "/spot/quote/v1/ticker/24hr"
         else:
-            suffix = '/v2/public/tickers'
+            suffix = "/v2/public/tickers"
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs
+            method="GET", path=self.endpoint + suffix, query=kwargs
         )
 
     def last_traded_price(self, **kwargs):
@@ -269,9 +277,9 @@ class HTTP:
         """
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + '/spot/quote/v1/ticker/price',
-            query=kwargs
+            method="GET",
+            path=self.endpoint + "/spot/quote/v1/ticker/price",
+            query=kwargs,
         )
 
     def best_bid_ask_price(self, **kwargs):
@@ -284,9 +292,9 @@ class HTTP:
         """
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + '/spot/quote/v1/ticker/book_ticker',
-            query=kwargs
+            method="GET",
+            path=self.endpoint + "/spot/quote/v1/ticker/book_ticker",
+            query=kwargs,
         )
 
     def public_trading_records(self, **kwargs):
@@ -301,20 +309,18 @@ class HTTP:
 
         # Replace query param 'from_id' since 'from' keyword is reserved.
         # Temporary workaround until Bybit updates official request params
-        if 'from_id' in kwargs:
-            kwargs['from'] = kwargs.pop('from_id')
+        if "from_id" in kwargs:
+            kwargs["from"] = kwargs.pop("from_id")
 
-        if self.spot is True or kwargs.get('spot', '') is True:
-            suffix = '/spot/quote/v1/trades'
-        elif kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/public/linear/recent-trading-records'
+        if self.spot is True or kwargs.get("spot", "") is True:
+            suffix = "/spot/quote/v1/trades"
+        elif kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/public/linear/recent-trading-records"
         else:
-            suffix = '/v2/public/trading-records'
+            suffix = "/v2/public/trading-records"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs
+            method="GET", path=self.endpoint + suffix, query=kwargs
         )
 
     def query_symbol(self, **kwargs):
@@ -324,14 +330,11 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if self.spot is True or kwargs.get('spot', '') is True:
-            suffix = '/spot/v1/symbols'
+        if self.spot is True or kwargs.get("spot", "") is True:
+            suffix = "/spot/v1/symbols"
         else:
-            suffix = '/v2/public/symbols'
-        return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix
-        )
+            suffix = "/v2/public/symbols"
+        return self._submit_request(method="GET", path=self.endpoint + suffix)
 
     def liquidated_orders(self, **kwargs):
         """
@@ -345,13 +348,11 @@ class HTTP:
 
         # Replace query param 'from_id' since 'from' keyword is reserved.
         # Temporary workaround until Bybit updates official request params
-        if 'from_id' in kwargs:
-            kwargs['from'] = kwargs.pop('from_id')
+        if "from_id" in kwargs:
+            kwargs["from"] = kwargs.pop("from_id")
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + '/v2/public/liq-records',
-            query=kwargs
+            method="GET", path=self.endpoint + "/v2/public/liq-records", query=kwargs
         )
 
     def query_mark_price_kline(self, **kwargs):
@@ -365,18 +366,16 @@ class HTTP:
 
         # Replace query param 'from_time' since 'from' keyword is reserved.
         # Temporary workaround until Bybit updates official request params
-        if 'from_time' in kwargs:
-            kwargs['from'] = kwargs.pop('from_time')
+        if "from_time" in kwargs:
+            kwargs["from"] = kwargs.pop("from_time")
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/public/linear/mark-price-kline'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/public/linear/mark-price-kline"
         else:
-            suffix = '/v2/public/mark-price-kline'
+            suffix = "/v2/public/mark-price-kline"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs
+            method="GET", path=self.endpoint + suffix, query=kwargs
         )
 
     def query_index_price_kline(self, **kwargs):
@@ -390,18 +389,16 @@ class HTTP:
 
         # Replace query param 'from_time' since 'from' keyword is reserved.
         # Temporary workaround until Bybit updates official request params
-        if 'from_time' in kwargs:
-            kwargs['from'] = kwargs.pop('from_time')
+        if "from_time" in kwargs:
+            kwargs["from"] = kwargs.pop("from_time")
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/public/linear/index-price-kline'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/public/linear/index-price-kline"
         else:
-            suffix = '/v2/public/index-price-kline'
+            suffix = "/v2/public/index-price-kline"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs
+            method="GET", path=self.endpoint + suffix, query=kwargs
         )
 
     def query_premium_index_kline(self, **kwargs):
@@ -416,18 +413,16 @@ class HTTP:
 
         # Replace query param 'from_time' since 'from' keyword is reserved.
         # Temporary workaround until Bybit updates official request params
-        if 'from_time' in kwargs:
-            kwargs['from'] = kwargs.pop('from_time')
+        if "from_time" in kwargs:
+            kwargs["from"] = kwargs.pop("from_time")
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/public/linear/premium-index-kline'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/public/linear/premium-index-kline"
         else:
-            suffix = '/v2/public/premium-index-kline'
+            suffix = "/v2/public/premium-index-kline"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs
+            method="GET", path=self.endpoint + suffix, query=kwargs
         )
 
     def open_interest(self, **kwargs):
@@ -441,9 +436,7 @@ class HTTP:
         """
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + '/v2/public/open-interest',
-            query=kwargs
+            method="GET", path=self.endpoint + "/v2/public/open-interest", query=kwargs
         )
 
     def latest_big_deal(self, **kwargs):
@@ -456,9 +449,7 @@ class HTTP:
         """
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + '/v2/public/big-deal',
-            query=kwargs
+            method="GET", path=self.endpoint + "/v2/public/big-deal", query=kwargs
         )
 
     def long_short_ratio(self, **kwargs):
@@ -471,9 +462,7 @@ class HTTP:
         """
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + '/v2/public/account-ratio',
-            query=kwargs
+            method="GET", path=self.endpoint + "/v2/public/account-ratio", query=kwargs
         )
 
     def place_active_order(self, **kwargs):
@@ -486,20 +475,17 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if self.spot is True or kwargs.get('spot', '') is True:
-            suffix = '/spot/v1/order'
-        elif kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/order/create'
-        elif kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/order/create'
+        if self.spot is True or kwargs.get("spot", "") is True:
+            suffix = "/spot/v1/order"
+        elif kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/order/create"
+        elif kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/order/create"
         else:
-            suffix = '/v2/private/order/create'
+            suffix = "/v2/private/order/create"
 
         return self._submit_request(
-            method='POST',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def place_active_order_bulk(self, orders: list, max_in_parallel=10):
@@ -516,10 +502,7 @@ class HTTP:
 
         with ThreadPoolExecutor(max_workers=max_in_parallel) as executor:
             executions = [
-                executor.submit(
-                    self.place_active_order,
-                    **order
-                ) for order in orders
+                executor.submit(self.place_active_order, **order) for order in orders
             ]
         executor.shutdown()
         return [execution.result() for execution in executions]
@@ -540,20 +523,17 @@ class HTTP:
         if endpoint:
             suffix = endpoint
         else:
-            if self.spot is True or kwargs.get('spot', '') is True:
-                suffix = '/spot/v1/history-orders'
-            elif kwargs.get('symbol', '').endswith('USDT'):
-                suffix = '/private/linear/order/list'
-            elif kwargs.get('symbol', '')[-2:].isdigit():
-                suffix = '/futures/private/order/list'
+            if self.spot is True or kwargs.get("spot", "") is True:
+                suffix = "/spot/v1/history-orders"
+            elif kwargs.get("symbol", "").endswith("USDT"):
+                suffix = "/private/linear/order/list"
+            elif kwargs.get("symbol", "")[-2:].isdigit():
+                suffix = "/futures/private/order/list"
             else:
-                suffix = '/v2/private/order/list'
+                suffix = "/v2/private/order/list"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def cancel_active_order(self, **kwargs):
@@ -566,22 +546,19 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        method = 'POST'
-        if self.spot is True or kwargs.get('spot', '') is True:
-            suffix = '/spot/v1/order'
-            method = 'DELETE'
-        elif kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/order/cancel'
-        elif kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/order/cancel'
+        method = "POST"
+        if self.spot is True or kwargs.get("spot", "") is True:
+            suffix = "/spot/v1/order"
+            method = "DELETE"
+        elif kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/order/cancel"
+        elif kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/order/cancel"
         else:
-            suffix = '/v2/private/order/cancel'
+            suffix = "/v2/private/order/cancel"
 
         return self._submit_request(
-            method=method,
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method=method, path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def fast_cancel_active_order(self, **kwargs):
@@ -594,10 +571,10 @@ class HTTP:
         """
 
         return self._submit_request(
-            method='DELETE',
-            path=self.endpoint + '/spot/v1/order/fast',
+            method="DELETE",
+            path=self.endpoint + "/spot/v1/order/fast",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def cancel_active_order_bulk(self, orders: list, max_in_parallel=10):
@@ -614,10 +591,7 @@ class HTTP:
 
         with ThreadPoolExecutor(max_workers=max_in_parallel) as executor:
             executions = [
-                executor.submit(
-                    self.cancel_active_order,
-                    **order
-                ) for order in orders
+                executor.submit(self.cancel_active_order, **order) for order in orders
             ]
         executor.shutdown()
         return [execution.result() for execution in executions]
@@ -632,18 +606,15 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/order/cancel-all'
-        elif kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/order/cancelAll'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/order/cancel-all"
+        elif kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/order/cancelAll"
         else:
-            suffix = '/v2/private/order/cancelAll'
+            suffix = "/v2/private/order/cancelAll"
 
         return self._submit_request(
-            method='POST',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def batch_cancel_active_order(self, **kwargs):
@@ -656,10 +627,10 @@ class HTTP:
         """
 
         return self._submit_request(
-            method='DELETE',
-            path=self.endpoint + '/spot/order/batch-cancel',
+            method="DELETE",
+            path=self.endpoint + "/spot/order/batch-cancel",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def batch_fast_cancel_active_order(self, **kwargs):
@@ -672,10 +643,10 @@ class HTTP:
         """
 
         return self._submit_request(
-            method='DELETE',
-            path=self.endpoint + '/spot/order/batch-fast-cancel',
+            method="DELETE",
+            path=self.endpoint + "/spot/order/batch-fast-cancel",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def batch_cancel_active_order_by_ids(self, **kwargs):
@@ -688,10 +659,10 @@ class HTTP:
         """
 
         return self._submit_request(
-            method='DELETE',
-            path=self.endpoint + '/spot/order/batch-cancel-by-ids',
+            method="DELETE",
+            path=self.endpoint + "/spot/order/batch-cancel-by-ids",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def replace_active_order(self, **kwargs):
@@ -703,18 +674,15 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/order/replace'
-        elif kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/order/replace'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/order/replace"
+        elif kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/order/replace"
         else:
-            suffix = '/v2/private/order/replace'
+            suffix = "/v2/private/order/replace"
 
         return self._submit_request(
-            method='POST',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def replace_active_order_bulk(self, orders: list, max_in_parallel=10):
@@ -731,10 +699,7 @@ class HTTP:
 
         with ThreadPoolExecutor(max_workers=max_in_parallel) as executor:
             executions = [
-                executor.submit(
-                    self.replace_active_order,
-                    **order
-                ) for order in orders
+                executor.submit(self.replace_active_order, **order) for order in orders
             ]
         executor.shutdown()
         return [execution.result() for execution in executions]
@@ -748,20 +713,17 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if self.spot is True or kwargs.get('spot', '') is True:
-            suffix = '/spot/v1/open-orders'
-        elif kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/order/search'
-        elif kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/order'
+        if self.spot is True or kwargs.get("spot", "") is True:
+            suffix = "/spot/v1/open-orders"
+        elif kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/order/search"
+        elif kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/order"
         else:
-            suffix = '/v2/private/order'
+            suffix = "/v2/private/order"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def place_conditional_order(self, **kwargs):
@@ -774,18 +736,15 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/stop-order/create'
-        elif kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/stop-order/create'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/stop-order/create"
+        elif kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/stop-order/create"
         else:
-            suffix = '/v2/private/stop-order/create'
+            suffix = "/v2/private/stop-order/create"
 
         return self._submit_request(
-            method='POST',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def place_conditional_order_bulk(self, orders: list, max_in_parallel=10):
@@ -802,10 +761,8 @@ class HTTP:
 
         with ThreadPoolExecutor(max_workers=max_in_parallel) as executor:
             executions = [
-                executor.submit(
-                    self.place_conditional_order,
-                    **order
-                ) for order in orders
+                executor.submit(self.place_conditional_order, **order)
+                for order in orders
             ]
         executor.shutdown()
         return [execution.result() for execution in executions]
@@ -820,18 +777,15 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/stop-order/list'
-        elif kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/stop-order/list'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/stop-order/list"
+        elif kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/stop-order/list"
         else:
-            suffix = '/v2/private/stop-order/list'
+            suffix = "/v2/private/stop-order/list"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def cancel_conditional_order(self, **kwargs):
@@ -844,18 +798,15 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/stop-order/cancel'
-        elif kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/stop-order/cancel'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/stop-order/cancel"
+        elif kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/stop-order/cancel"
         else:
-            suffix = '/v2/private/stop-order/cancel'
+            suffix = "/v2/private/stop-order/cancel"
 
         return self._submit_request(
-            method='POST',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def cancel_conditional_order_bulk(self, orders: list, max_in_parallel=10):
@@ -872,10 +823,8 @@ class HTTP:
 
         with ThreadPoolExecutor(max_workers=max_in_parallel) as executor:
             executions = [
-                executor.submit(
-                    self.cancel_conditional_order,
-                    **order
-                ) for order in orders
+                executor.submit(self.cancel_conditional_order, **order)
+                for order in orders
             ]
         executor.shutdown()
         return [execution.result() for execution in executions]
@@ -890,18 +839,15 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/stop-order/cancel-all'
-        elif kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/stop-order/cancelAll'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/stop-order/cancel-all"
+        elif kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/stop-order/cancelAll"
         else:
-            suffix = '/v2/private/stop-order/cancelAll'
+            suffix = "/v2/private/stop-order/cancelAll"
 
         return self._submit_request(
-            method='POST',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def replace_conditional_order(self, **kwargs):
@@ -913,18 +859,15 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/stop-order/replace'
-        elif kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/stop-order/replace'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/stop-order/replace"
+        elif kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/stop-order/replace"
         else:
-            suffix = '/v2/private/stop-order/replace'
+            suffix = "/v2/private/stop-order/replace"
 
         return self._submit_request(
-            method='POST',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def replace_conditional_order_bulk(self, orders: list, max_in_parallel=10):
@@ -941,10 +884,8 @@ class HTTP:
 
         with ThreadPoolExecutor(max_workers=max_in_parallel) as executor:
             executions = [
-                executor.submit(
-                    self.replace_conditional_order,
-                    **order
-                ) for order in orders
+                executor.submit(self.replace_conditional_order, **order)
+                for order in orders
             ]
         executor.shutdown()
         return [execution.result() for execution in executions]
@@ -958,18 +899,15 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/stop-order/search'
-        elif kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/stop-order'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/stop-order/search"
+        elif kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/stop-order"
         else:
-            suffix = '/v2/private/stop-order'
+            suffix = "/v2/private/stop-order"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def my_position(self, endpoint="", **kwargs):
@@ -988,18 +926,15 @@ class HTTP:
         if endpoint:
             suffix = endpoint
         else:
-            if kwargs.get('symbol', '').endswith('USDT'):
-                suffix = '/private/linear/position/list'
-            elif kwargs.get('symbol', '')[-2:].isdigit():
-                suffix = '/futures/private/position/list'
+            if kwargs.get("symbol", "").endswith("USDT"):
+                suffix = "/private/linear/position/list"
+            elif kwargs.get("symbol", "")[-2:].isdigit():
+                suffix = "/futures/private/position/list"
             else:
-                suffix = '/v2/private/position/list'
+                suffix = "/v2/private/position/list"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def set_auto_add_margin(self, **kwargs):
@@ -1013,10 +948,10 @@ class HTTP:
         """
 
         return self._submit_request(
-            method='POST',
-            path=self.endpoint + '/private/linear/position/set-auto-add-margin',
+            method="POST",
+            path=self.endpoint + "/private/linear/position/set-auto-add-margin",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def set_leverage(self, **kwargs):
@@ -1030,18 +965,15 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/position/set-leverage'
-        elif kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/position/leverage/save'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/position/set-leverage"
+        elif kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/position/leverage/save"
         else:
-            suffix = '/v2/private/position/leverage/save'
+            suffix = "/v2/private/position/leverage/save"
 
         return self._submit_request(
-            method='POST',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def cross_isolated_margin_switch(self, **kwargs):
@@ -1054,18 +986,15 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/position/switch-isolated'
-        elif kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/position/switch-isolated'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/position/switch-isolated"
+        elif kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/position/switch-isolated"
         else:
-            suffix = '/v2/private/position/switch-isolated'
+            suffix = "/v2/private/position/switch-isolated"
 
         return self._submit_request(
-            method='POST',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def position_mode_switch(self, **kwargs):
@@ -1081,18 +1010,15 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/position/switch-mode'
-        elif kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/position/switch-mode'
+        if kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/position/switch-mode"
+        elif kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/position/switch-mode"
         else:
-            suffix = '/v2/private/position/switch-mode'
+            suffix = "/v2/private/position/switch-mode"
 
         return self._submit_request(
-            method='POST',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def full_partial_position_tp_sl_switch(self, **kwargs):
@@ -1103,18 +1029,15 @@ class HTTP:
             https://bybit-exchange.github.io/docs/inverse/#t-switchmode.
         :returns: Request results as dictionary.
         """
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/tpsl/switch-mode'
-        elif kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/tpsl/switch-mode'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/tpsl/switch-mode"
+        elif kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/tpsl/switch-mode"
         else:
-            suffix = '/v2/private/tpsl/switch-mode'
+            suffix = "/v2/private/tpsl/switch-mode"
 
         return self._submit_request(
-            method='POST',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def change_margin(self, **kwargs):
@@ -1126,16 +1049,13 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/position/change-position-margin'
+        if kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/position/change-position-margin"
         else:
-            suffix = '/v2/private/position/change-position-margin'
+            suffix = "/v2/private/position/change-position-margin"
 
         return self._submit_request(
-            method='POST',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def set_trading_stop(self, **kwargs):
@@ -1147,18 +1067,15 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/position/trading-stop'
-        elif kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/position/trading-stop'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/position/trading-stop"
+        elif kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/position/trading-stop"
         else:
-            suffix = '/v2/private/position/trading-stop'
+            suffix = "/v2/private/position/trading-stop"
 
         return self._submit_request(
-            method='POST',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def add_reduce_margin(self, **kwargs):
@@ -1171,10 +1088,10 @@ class HTTP:
         """
 
         return self._submit_request(
-            method='POST',
-            path=self.endpoint + '/private/linear/position/add-margin',
+            method="POST",
+            path=self.endpoint + "/private/linear/position/add-margin",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def user_leverage(self, **kwargs):
@@ -1187,13 +1104,15 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        self.logger.warning('This endpoint is deprecated and will be removed. Use my_position()')
+        self.logger.warning(
+            "This endpoint is deprecated and will be removed. Use my_position()"
+        )
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + '/v2/private/position/list',
+            method="GET",
+            path=self.endpoint + "/v2/private/position/list",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def change_user_leverage(self, **kwargs):
@@ -1205,13 +1124,15 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        self.logger.warning('This endpoint is deprecated and will be removed. Use set_leverage()')
+        self.logger.warning(
+            "This endpoint is deprecated and will be removed. Use set_leverage()"
+        )
 
         return self._submit_request(
-            method='POST',
-            path=self.endpoint + '/user/leverage/save',
+            method="POST",
+            path=self.endpoint + "/user/leverage/save",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def user_trade_records(self, **kwargs):
@@ -1224,20 +1145,17 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if self.spot is True or kwargs.get('spot', '') is True:
-            suffix = '/spot/v1/myTrades'
-        elif kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/trade/execution/list'
-        elif kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/execution/list'
+        if self.spot is True or kwargs.get("spot", "") is True:
+            suffix = "/spot/v1/myTrades"
+        elif kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/trade/execution/list"
+        elif kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/execution/list"
         else:
-            suffix = '/v2/private/execution/list'
+            suffix = "/v2/private/execution/list"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def closed_profit_and_loss(self, **kwargs):
@@ -1250,18 +1168,15 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/trade/closed-pnl/list'
-        elif kwargs.get('symbol', '')[-2:].isdigit():
-            suffix = '/futures/private/trade/closed-pnl/list'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/trade/closed-pnl/list"
+        elif kwargs.get("symbol", "")[-2:].isdigit():
+            suffix = "/futures/private/trade/closed-pnl/list"
         else:
-            suffix = '/v2/private/trade/closed-pnl/list'
+            suffix = "/v2/private/trade/closed-pnl/list"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def query_trading_fee_rate(self, **kwargs):
@@ -1273,10 +1188,10 @@ class HTTP:
         :returns: Request results as dictionary.
         """
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + '/v2/private/position/fee-rate',
+            method="GET",
+            path=self.endpoint + "/v2/private/position/fee-rate",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def get_risk_limit(self, endpoint="", **kwargs):
@@ -1293,21 +1208,19 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('is_linear') in (False, True):
+        if kwargs.get("is_linear") in (False, True):
             self.logger.warning("The is_linear argument is obsolete.")
 
         if endpoint:
             suffix = endpoint
         else:
-            if kwargs.get('symbol', '').endswith('USDT'):
-                suffix = '/public/linear/risk-limit'
+            if kwargs.get("symbol", "").endswith("USDT"):
+                suffix = "/public/linear/risk-limit"
             else:
-                suffix = '/v2/public/risk-limit/list'
+                suffix = "/v2/public/risk-limit/list"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs
+            method="GET", path=self.endpoint + suffix, query=kwargs
         )
 
     def set_risk_limit(self, **kwargs):
@@ -1319,16 +1232,13 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/position/set-risk'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/position/set-risk"
         else:
-            suffix = '/v2/private/position/risk-limit'
+            suffix = "/v2/private/position/risk-limit"
 
         return self._submit_request(
-            method='POST',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def get_the_last_funding_rate(self, **kwargs):
@@ -1342,15 +1252,13 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/public/linear/funding/prev-funding-rate'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/public/linear/funding/prev-funding-rate"
         else:
-            suffix = '/v2/public/funding/prev-funding-rate'
+            suffix = "/v2/public/funding/prev-funding-rate"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs
+            method="GET", path=self.endpoint + suffix, query=kwargs
         )
 
     def my_last_funding_fee(self, **kwargs):
@@ -1366,16 +1274,13 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/funding/prev-funding'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/funding/prev-funding"
         else:
-            suffix = '/v2/private/funding/prev-funding'
+            suffix = "/v2/private/funding/prev-funding"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def predicted_funding_rate(self, **kwargs):
@@ -1387,16 +1292,13 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if kwargs.get('symbol', '').endswith('USDT'):
-            suffix = '/private/linear/funding/predicted-funding'
+        if kwargs.get("symbol", "").endswith("USDT"):
+            suffix = "/private/linear/funding/predicted-funding"
         else:
-            suffix = '/v2/private/funding/predicted-funding'
+            suffix = "/v2/private/funding/predicted-funding"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def api_key_info(self):
@@ -1407,9 +1309,7 @@ class HTTP:
         """
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + '/v2/private/account/api-key',
-            auth=True
+            method="GET", path=self.endpoint + "/v2/private/account/api-key", auth=True
         )
 
     def lcp_info(self, **kwargs):
@@ -1425,10 +1325,10 @@ class HTTP:
         """
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + '/v2/private/account/lcp',
+            method="GET",
+            path=self.endpoint + "/v2/private/account/lcp",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def get_wallet_balance(self, **kwargs):
@@ -1440,16 +1340,13 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if self.spot is True or kwargs.get('spot', '') is True:
-            suffix = '/spot/v1/account'
+        if self.spot is True or kwargs.get("spot", "") is True:
+            suffix = "/spot/v1/account"
         else:
-            suffix = '/v2/private/wallet/balance'
+            suffix = "/v2/private/wallet/balance"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def wallet_fund_records(self, **kwargs):
@@ -1465,14 +1362,14 @@ class HTTP:
 
         # Replace query param 'from_id' since 'from' keyword is reserved.
         # Temporary workaround until Bybit updates official request params
-        if 'from_id' in kwargs:
-            kwargs['from'] = kwargs.pop('from_id')
+        if "from_id" in kwargs:
+            kwargs["from"] = kwargs.pop("from_id")
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + '/v2/private/wallet/fund/records',
+            method="GET",
+            path=self.endpoint + "/v2/private/wallet/fund/records",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def withdraw_records(self, **kwargs):
@@ -1485,10 +1382,10 @@ class HTTP:
         """
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + '/v2/private/wallet/withdraw/list',
+            method="GET",
+            path=self.endpoint + "/v2/private/wallet/withdraw/list",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def asset_exchange_records(self, **kwargs):
@@ -1501,10 +1398,10 @@ class HTTP:
         """
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + '/v2/private/exchange-order/list',
+            method="GET",
+            path=self.endpoint + "/v2/private/exchange-order/list",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def server_time(self, **kwargs):
@@ -1514,15 +1411,12 @@ class HTTP:
         :returns: Request results as dictionary.
         """
 
-        if self.spot is True or kwargs.get('spot', '') is True:
-            suffix = '/spot/v1/time'
+        if self.spot is True or kwargs.get("spot", "") is True:
+            suffix = "/spot/v1/time"
         else:
-            suffix = '/v2/public/time'
+            suffix = "/v2/public/time"
 
-        return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix
-        )
+        return self._submit_request(method="GET", path=self.endpoint + suffix)
 
     def announcement(self):
         """
@@ -1532,15 +1426,14 @@ class HTTP:
         """
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + '/v2/public/announcement'
+            method="GET", path=self.endpoint + "/v2/public/announcement"
         )
 
-    '''
+    """
     Additional Methods
     These methods use two or more requests to perform a specific
     function and are exclusive to pybit.
-    '''
+    """
 
     def close_position(self, symbol):
         """
@@ -1556,34 +1449,36 @@ class HTTP:
 
         # First we fetch the user's position.
         try:
-            r = self.my_position(symbol=symbol)['result']
+            r = self.my_position(symbol=symbol)["result"]
 
         # If there is no returned position, we want to handle that.
         except KeyError:
-            return self.logger.error('No position detected.')
+            return self.logger.error("No position detected.")
 
         # Next we generate a list of market orders
         orders = [
             {
-                'symbol': symbol,
-                'order_type': 'Market',
-                'side': 'Buy' if p['side'] == 'Sell' else 'Sell',
-                'qty': p['size'],
-                'time_in_force': 'ImmediateOrCancel',
-                'reduce_only': True,
-                'close_on_trigger': True
-            } for p in (r if isinstance(r, list) else [r]) if p['size'] > 0
+                "symbol": symbol,
+                "order_type": "Market",
+                "side": "Buy" if p["side"] == "Sell" else "Sell",
+                "qty": p["size"],
+                "time_in_force": "ImmediateOrCancel",
+                "reduce_only": True,
+                "close_on_trigger": True,
+            }
+            for p in (r if isinstance(r, list) else [r])
+            if p["size"] > 0
         ]
 
         if len(orders) == 0:
-            return self.logger.error('No position detected.')
+            return self.logger.error("No position detected.")
 
         # Submit a market order against each open position for the same qty.
         return self.place_active_order_bulk(orders)
 
-    '''
+    """
     Below are methods under https://bybit-exchange.github.io/docs/account_asset
-    '''
+    """
 
     def create_internal_transfer(self, **kwargs):
         """
@@ -1595,15 +1490,12 @@ class HTTP:
         """
 
         suffix = "/asset/v1/private/transfer"
-        if self._verify_string(kwargs, 'amount'):
+        if self._verify_string(kwargs, "amount"):
             return self._submit_request(
-                method='POST',
-                path=self.endpoint + suffix,
-                query=kwargs,
-                auth=True
+                method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
             )
         else:
-            self.logger.error('amount must be in string format')
+            self.logger.error("amount must be in string format")
 
     def create_subaccount_transfer(self, **kwargs):
         """
@@ -1616,15 +1508,12 @@ class HTTP:
 
         suffix = "/asset/v1/private/sub-member/transfer"
 
-        if self._verify_string(kwargs, 'amount'):
+        if self._verify_string(kwargs, "amount"):
             return self._submit_request(
-                method='POST',
-                path=self.endpoint + suffix,
-                query=kwargs,
-                auth=True
+                method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
             )
         else:
-            self.logger.error('amount must be in string format')
+            self.logger.error("amount must be in string format")
 
     def query_transfer_list(self, **kwargs):
         """
@@ -1638,10 +1527,7 @@ class HTTP:
         suffix = "/asset/v1/private/transfer/list"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def query_subaccount_list(self):
@@ -1654,10 +1540,7 @@ class HTTP:
         suffix = "/asset/v1/private/sub-member/member-ids"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query={},
-            auth=True
+            method="GET", path=self.endpoint + suffix, query={}, auth=True
         )
 
     def query_subaccount_transfer_list(self, **kwargs):
@@ -1672,17 +1555,14 @@ class HTTP:
         suffix = "/asset/v1/private/sub-member/transfer/list"
 
         return self._submit_request(
-            method='GET',
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
-    '''
+    """
     Internal methods; signature and request submission.
     For more information about the request signature, see
     https://bybit-exchange.github.io/docs/inverse/#t-authentication.
-    '''
+    """
 
     def _auth(self, method, params, recv_window):
         """
@@ -1700,28 +1580,32 @@ class HTTP:
         api_secret = self.api_secret
 
         if api_key is None or api_secret is None:
-            raise PermissionError('Authenticated endpoints require keys.')
+            raise PermissionError("Authenticated endpoints require keys.")
 
         # Append required parameters.
-        params['api_key'] = api_key
-        params['recv_window'] = recv_window
-        params['timestamp'] = int(time.time() * 10 ** 3)
+        params["api_key"] = api_key
+        params["recv_window"] = recv_window
+        params["timestamp"] = int(time.time() * 10**3)
 
         # Sort dictionary alphabetically to create querystring.
-        _val = '&'.join(
-            [str(k) + '=' + str(v) for k, v in sorted(params.items()) if
-             (k != 'sign') and (v is not None)]
+        _val = "&".join(
+            [
+                str(k) + "=" + str(v)
+                for k, v in sorted(params.items())
+                if (k != "sign") and (v is not None)
+            ]
         )
 
         # Bug fix. Replaces all capitalized booleans with lowercase.
-        if method == 'POST':
-            _val = _val.replace('True', 'true').replace('False', 'false')
+        if method == "POST":
+            _val = _val.replace("True", "true").replace("False", "false")
 
         # Return signature.
-        return str(hmac.new(
-            bytes(api_secret, 'utf-8'),
-            bytes(_val, 'utf-8'), digestmod='sha256'
-        ).hexdigest())
+        return str(
+            hmac.new(
+                bytes(api_secret, "utf-8"), bytes(_val, "utf-8"), digestmod="sha256"
+            ).hexdigest()
+        )
 
     def _verify_string(self, params, key):
         if key in params:
@@ -1747,7 +1631,7 @@ class HTTP:
             query = {}
 
         # Remove internal spot arg
-        query.pop('spot', '')
+        query.pop("spot", "")
 
         # Store original recv_window.
         recv_window = self.recv_window
@@ -1768,13 +1652,13 @@ class HTTP:
             retries_attempted -= 1
             if retries_attempted < 0:
                 raise FailedRequestError(
-                    request=f'{method} {path}: {req_params}',
-                    message='Bad Request. Retries exceeded maximum.',
+                    request=f"{method} {path}: {req_params}",
+                    message="Bad Request. Retries exceeded maximum.",
                     status_code=400,
-                    time=dt.utcnow().strftime("%H:%M:%S")
+                    time=dt.utcnow().strftime("%H:%M:%S"),
                 )
 
-            retries_remaining = f'{retries_attempted} retries remain.'
+            retries_remaining = f"{retries_attempted} retries remain."
 
             # Authenticate if we are using a private endpoint.
             if auth:
@@ -1789,47 +1673,44 @@ class HTTP:
                 query = dict(sorted(query.items(), key=lambda x: x))
 
                 # Append the signature to the dictionary.
-                query['sign'] = signature
+                query["sign"] = signature
 
             # Define parameters and log the request.
             if query is not None:
-                req_params = {k: v for k, v in query.items() if
-                              v is not None}
+                req_params = {k: v for k, v in query.items() if v is not None}
 
             else:
                 req_params = {}
 
             # Log the request.
             if self.log_requests:
-                self.logger.debug(f'Request -> {method} {path}: {req_params}')
+                self.logger.debug(f"Request -> {method} {path}: {req_params}")
 
             # Prepare request; use 'params' for GET and 'data' for POST.
-            if method == 'GET':
-                headers = {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
+            if method == "GET":
+                headers = {"Content-Type": "application/x-www-form-urlencoded"}
                 r = self.client.prepare_request(
-                    requests.Request(method, path, params=req_params,
-                                     headers=headers)
+                    requests.Request(method, path, params=req_params, headers=headers)
                 )
             else:
-                if 'spot' in path:
-                    full_param_str = '&'.join(
-                        [str(k) + '=' + str(v) for k, v in
-                         sorted(query.items()) if v is not None]
+                if "spot" in path:
+                    full_param_str = "&".join(
+                        [
+                            str(k) + "=" + str(v)
+                            for k, v in sorted(query.items())
+                            if v is not None
+                        ]
                     )
-                    headers = {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    }
+                    headers = {"Content-Type": "application/x-www-form-urlencoded"}
                     r = self.client.prepare_request(
-                        requests.Request(method, path + f"?{full_param_str}",
-                                         headers=headers)
+                        requests.Request(
+                            method, path + f"?{full_param_str}", headers=headers
+                        )
                     )
 
                 else:
                     r = self.client.prepare_request(
-                        requests.Request(method, path,
-                                         data=json.dumps(req_params))
+                        requests.Request(method, path, data=json.dumps(req_params))
                     )
 
             # Attempt the request.
@@ -1838,12 +1719,12 @@ class HTTP:
 
             # If requests fires an error, retry.
             except (
-                    requests.exceptions.ReadTimeout,
-                    requests.exceptions.SSLError,
-                    requests.exceptions.ConnectionError
+                requests.exceptions.ReadTimeout,
+                requests.exceptions.SSLError,
+                requests.exceptions.ConnectionError,
             ) as e:
                 if self.force_retry:
-                    self.logger.error(f'{e}. {retries_remaining}')
+                    self.logger.error(f"{e}. {retries_remaining}")
                     time.sleep(self.retry_delay)
                     continue
                 else:
@@ -1856,69 +1737,65 @@ class HTTP:
             # If we have trouble converting, handle the error and retry.
             except JSONDecodeError as e:
                 if self.force_retry:
-                    self.logger.error(f'{e}. {retries_remaining}')
+                    self.logger.error(f"{e}. {retries_remaining}")
                     time.sleep(self.retry_delay)
                     continue
                 else:
                     raise FailedRequestError(
-                        request=f'{method} {path}: {req_params}',
-                        message='Conflict. Could not decode JSON.',
+                        request=f"{method} {path}: {req_params}",
+                        message="Conflict. Could not decode JSON.",
                         status_code=409,
-                        time=dt.utcnow().strftime("%H:%M:%S")
+                        time=dt.utcnow().strftime("%H:%M:%S"),
                     )
 
             # If Bybit returns an error, raise.
-            if s_json['ret_code']:
+            if s_json["ret_code"]:
 
                 # Generate error message.
-                error_msg = (
-                    f'{s_json["ret_msg"]} (ErrCode: {s_json["ret_code"]})'
-                )
+                error_msg = f'{s_json["ret_msg"]} (ErrCode: {s_json["ret_code"]})'
 
                 # Set default retry delay.
                 err_delay = self.retry_delay
 
                 # Retry non-fatal whitelisted error requests.
-                if s_json['ret_code'] in self.retry_codes:
+                if s_json["ret_code"] in self.retry_codes:
 
                     # 10002, recv_window error; add 2.5 seconds and retry.
-                    if s_json['ret_code'] == 10002:
-                        error_msg += '. Added 2.5 seconds to recv_window'
+                    if s_json["ret_code"] == 10002:
+                        error_msg += ". Added 2.5 seconds to recv_window"
                         recv_window += 2500
 
                     # 10006, ratelimit error; wait until rate_limit_reset_ms
                     # and retry.
-                    elif s_json['ret_code'] == 10006:
+                    elif s_json["ret_code"] == 10006:
                         self.logger.error(
-                            f'{error_msg}. Ratelimited on current request. '
-                            f'Sleeping, then trying again. Request: {path}'
+                            f"{error_msg}. Ratelimited on current request. "
+                            f"Sleeping, then trying again. Request: {path}"
                         )
 
                         # Calculate how long we need to wait.
-                        limit_reset = s_json['rate_limit_reset_ms'] / 1000
-                        reset_str = time.strftime(
-                            '%X', time.localtime(limit_reset)
-                        )
+                        limit_reset = s_json["rate_limit_reset_ms"] / 1000
+                        reset_str = time.strftime("%X", time.localtime(limit_reset))
                         err_delay = int(limit_reset) - int(time.time())
                         error_msg = (
-                            f'Ratelimit will reset at {reset_str}. '
-                            f'Sleeping for {err_delay} seconds'
+                            f"Ratelimit will reset at {reset_str}. "
+                            f"Sleeping for {err_delay} seconds"
                         )
 
                     # Log the error.
-                    self.logger.error(f'{error_msg}. {retries_remaining}')
+                    self.logger.error(f"{error_msg}. {retries_remaining}")
                     time.sleep(err_delay)
                     continue
 
-                elif s_json['ret_code'] in self.ignore_codes:
+                elif s_json["ret_code"] in self.ignore_codes:
                     pass
 
                 else:
                     raise InvalidRequestError(
-                        request=f'{method} {path}: {req_params}',
+                        request=f"{method} {path}: {req_params}",
                         message=s_json["ret_msg"],
                         status_code=s_json["ret_code"],
-                        time=dt.utcnow().strftime("%H:%M:%S")
+                        time=dt.utcnow().strftime("%H:%M:%S"),
                     )
             else:
                 return s_json

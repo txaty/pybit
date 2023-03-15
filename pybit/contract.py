@@ -18,7 +18,7 @@ class HTTP(_DerivativesHTTPManager):
             method="POST",
             path=self.endpoint + "/contract/v3/private/order/create",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def get_open_orders(self, **kwargs):
@@ -26,7 +26,7 @@ class HTTP(_DerivativesHTTPManager):
             method="GET",
             path=self.endpoint + "/contract/v3/private/order/unfilled-orders",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def get_orders(self, **kwargs):
@@ -34,7 +34,7 @@ class HTTP(_DerivativesHTTPManager):
             method="GET",
             path=self.endpoint + "/contract/v3/private/order/list",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def replace_order(self, **kwargs):
@@ -42,7 +42,7 @@ class HTTP(_DerivativesHTTPManager):
             method="POST",
             path=self.endpoint + "/contract/v3/private/order/replace",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def cancel_order(self, **kwargs):
@@ -50,7 +50,7 @@ class HTTP(_DerivativesHTTPManager):
             method="POST",
             path=self.endpoint + "/contract/v3/private/order/cancel",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def cancel_all_orders(self, **kwargs):
@@ -58,7 +58,7 @@ class HTTP(_DerivativesHTTPManager):
             method="POST",
             path=self.endpoint + "/contract/v3/private/order/cancel-all",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def get_position(self, **kwargs):
@@ -66,7 +66,7 @@ class HTTP(_DerivativesHTTPManager):
             method="GET",
             path=self.endpoint + "/contract/v3/private/position/list",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def set_leverage(self, **kwargs):
@@ -74,7 +74,7 @@ class HTTP(_DerivativesHTTPManager):
             method="POST",
             path=self.endpoint + "/contract/v3/private/position/set-leverage",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def set_trading_stop(self, **kwargs):
@@ -82,7 +82,7 @@ class HTTP(_DerivativesHTTPManager):
             method="POST",
             path=self.endpoint + "/contract/v3/private/position/trading-stop",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def set_auto_add_margin(self, **kwargs):
@@ -90,7 +90,7 @@ class HTTP(_DerivativesHTTPManager):
             method="POST",
             path=self.endpoint + "/contract/v3/private/position/set-auto-add-margin",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def set_risk_limit(self, **kwargs):
@@ -98,7 +98,7 @@ class HTTP(_DerivativesHTTPManager):
             method="POST",
             path=self.endpoint + "/contract/v3/private/position/set-risk-limit",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def switch_tp_sl_mode(self, **kwargs):
@@ -106,7 +106,7 @@ class HTTP(_DerivativesHTTPManager):
             method="POST",
             path=self.endpoint + "/contract/v3/private/position/switch-tpsl-mode",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def switch_cross_isolated_mode(self, **kwargs):
@@ -114,7 +114,7 @@ class HTTP(_DerivativesHTTPManager):
             method="POST",
             path=self.endpoint + "/contract/v3/private/position/switch-isolated",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def switch_position_mode(self, **kwargs):
@@ -122,7 +122,7 @@ class HTTP(_DerivativesHTTPManager):
             method="POST",
             path=self.endpoint + "/contract/v3/private/position/switch-mode",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def get_trade_history(self, **kwargs):
@@ -130,7 +130,7 @@ class HTTP(_DerivativesHTTPManager):
             method="GET",
             path=self.endpoint + "/contract/v3/private/execution/list",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def get_closed_profit_and_loss_history(self, **kwargs):
@@ -138,7 +138,7 @@ class HTTP(_DerivativesHTTPManager):
             method="GET",
             path=self.endpoint + "/contract/v3/private/position/closed-pnl",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def get_wallet_balance(self, **kwargs):
@@ -146,7 +146,7 @@ class HTTP(_DerivativesHTTPManager):
             method="GET",
             path=self.endpoint + "/contract/v3/private/account/wallet/balance",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def get_trading_fee_rate(self, **kwargs):
@@ -154,7 +154,7 @@ class HTTP(_DerivativesHTTPManager):
             method="GET",
             path=self.endpoint + "/contract/v3/private/account/fee-rate",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def get_wallet_fund_history(self, **kwargs):
@@ -162,7 +162,7 @@ class HTTP(_DerivativesHTTPManager):
             method="GET",
             path=self.endpoint + "/contract/v3/private/account/wallet/fund-records",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
     def set_margin_mode(self, **kwargs):
@@ -170,22 +170,22 @@ class HTTP(_DerivativesHTTPManager):
             method="POST",
             path=self.endpoint + "/contract/v3/private/account/setMarginMode",
             query=kwargs,
-            auth=True
+            auth=True,
         )
 
 
 class WebSocket:
     def __init__(
-            self,
-            testnet,
-            domain="",
-            api_key=None,
-            api_secret=None,
-            ping_interval=20,
-            ping_timeout=10,
-            retries=10,
-            restart_on_error=True,
-            trace_logging=False
+        self,
+        testnet,
+        domain="",
+        api_key=None,
+        api_secret=None,
+        ping_interval=20,
+        ping_timeout=10,
+        retries=10,
+        restart_on_error=True,
+        trace_logging=False,
     ):
         self.ws_public = None
         self.ws_private = None
@@ -208,16 +208,14 @@ class WebSocket:
         ws_public = self._determine_public_ws_connection(symbol)
 
         if not self.ws_public:
-            self.ws_public = \
-                _V3WebSocketManager(ws_name, **self.public_args)
+            self.ws_public = _V3WebSocketManager(ws_name, **self.public_args)
             self.ws_public._connect(ws_public)
             self.active_connections.append(self.ws_public)
         self.ws_public.subscribe(topic, callback, symbol)
 
     def _ws_private_subscribe(self, topic, callback):
         if not self.ws_private:
-            self.ws_private = \
-                _V3WebSocketManager(ws_name, **self.args)
+            self.ws_private = _V3WebSocketManager(ws_name, **self.args)
             self.ws_private._connect(PRIVATE_CONTRACT_WS)
             self.active_connections.append(self.ws_private)
         self.ws_private.subscribe(topic, callback)

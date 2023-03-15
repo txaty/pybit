@@ -17,10 +17,7 @@ class HTTP(_V3HTTPManager):
         """
 
         suffix = "/contract/v3/public/copytrading/symbol/list"
-        return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix
-        )
+        return self._submit_request(method="GET", path=self.endpoint + suffix)
 
     def place_order(self, **kwargs):
         """
@@ -29,105 +26,78 @@ class HTTP(_V3HTTPManager):
         suffix = "/contract/v3/private/copytrading/order/create"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def get_orders(self, **kwargs):
         suffix = "/contract/v3/private/copytrading/order/list"
 
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def cancel_order(self, **kwargs):
         suffix = "/contract/v3/private/copytrading/order/cancel"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def close_order(self, **kwargs):
         suffix = "/contract/v3/private/copytrading/order/close"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def get_position(self, **kwargs):
         suffix = "/contract/v3/private/copytrading/position/list"
 
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def close_position(self, **kwargs):
         suffix = "/contract/v3/private/copytrading/position/close"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def set_leverage(self, **kwargs):
         suffix = "/contract/v3/private/copytrading/position/set-leverage"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
-    def     get_wallet_balance(self, **kwargs):
+    def get_wallet_balance(self, **kwargs):
         suffix = "/contract/v3/private/copytrading/wallet/balance"
 
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def transfer(self, **kwargs):
         suffix = "/contract/v3/private/copytrading/wallet/transfer"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
 
 class WebSocket:
     def __init__(
-            self,
-            testnet,
-            domain="",
-            api_key=None,
-            api_secret=None,
-            ping_interval=20,
-            ping_timeout=10,
-            retries=10,
-            restart_on_error=True,
-            trace_logging=False
+        self,
+        testnet,
+        domain="",
+        api_key=None,
+        api_secret=None,
+        ping_interval=20,
+        ping_timeout=10,
+        retries=10,
+        restart_on_error=True,
+        trace_logging=False,
     ):
         self.ws_public = None
         self.ws_private = None
@@ -136,8 +106,7 @@ class WebSocket:
 
     def _ws_private_subscribe(self, topic, callback):
         if not self.ws_private:
-            self.ws_private = _FuturesWebSocketManager(
-                ws_name, **self.args)
+            self.ws_private = _FuturesWebSocketManager(ws_name, **self.args)
             self.ws_private._connect(PRIVATE_WSS)
             self.active_connections.append(self.ws_private)
         self.ws_private.subscribe(topic, callback)

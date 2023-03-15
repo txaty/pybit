@@ -160,21 +160,20 @@ from pybit.unified_margin import HTTP as unified_margin_session
 from pybit.account_asset import HTTP as account_asset
 
 
-# For ease of use, create abstraction layer to use `auth_required` functions. 
+# For ease of use, create abstraction layer to use `auth_required` functions.
 # To use actual API, use `is_testnet` = False
 class SpotManager:
     def __init__(self, api_key: str, api_secret: str, is_testnet: bool = True):
         self.api_key = api_key
         self.api_secret = api_secret
         if is_testnet:
-            self.endpoint = 'https://api-testnet.bybit.com'
+            self.endpoint = "https://api-testnet.bybit.com"
         self.session = spot_session(
-            endpoint=self.endpoint,
-            api_key=api_key,
-            api_secret=api_secret
+            endpoint=self.endpoint, api_key=api_key, api_secret=api_secret
         )
 
-spot_manager = SpotManager(api_key='...', api_secret='...', is_testnet=False)
+
+spot_manager = SpotManager(api_key="...", api_secret="...", is_testnet=False)
 spot_manager.session.get_wallet_balance()
 
 # To access public endpoints
@@ -185,21 +184,21 @@ session_unauth = spot_session()
 session_unauth.get_last_traded_price(symbol="BTCUSDT")
 
 
-# Similar like we created SpotManager, we can create UnifiedMargin object with correct seesion 
+# Similar like we created SpotManager, we can create UnifiedMargin object with correct seesion
 class UnifiedMarginManager:
     def __init__(self, api_key: str, api_secret: str, is_testnet: bool = True):
         self.api_key = api_key
         self.api_secret = api_secret
         if is_testnet:
-            self.endpoint = 'https://api-testnet.bybit.com'
+            self.endpoint = "https://api-testnet.bybit.com"
         self.session = unified_margin_session(
-            endpoint=self.endpoint,
-            api_key=api_key,
-            api_secret=api_secret
+            endpoint=self.endpoint, api_key=api_key, api_secret=api_secret
         )
 
 
-unified_manager = UnifiedMarginManager(api_key='...', api_secret='...', is_testnet=False)
+unified_manager = UnifiedMarginManager(
+    api_key="...", api_secret="...", is_testnet=False
+)
 unified_manager.session.get_account_info()
 
 # In case you receive error displayed below, account upgrade needs to be made: https://www.bybit.com/en-US/promo/events/unified-trading-account/
@@ -213,13 +212,11 @@ unified_manager.session.get_wallet_balance(coin="USDT")
 # To use API directly without extra class follow example below:
 
 account_asset(
-    api_key='...',
-    api_secret='...',
-    endpoint='mainnte or testnet endpoint'
+    api_key="...", api_secret="...", endpoint="mainnte or testnet endpoint"
 ).create_internal_transfer(
     transferId="UUID",
     coin="COIN",
     amount="10.0",
     fromAccountType="AccountTypeFrom",
-    toAccountType="AccountTypeTo"
+    toAccountType="AccountTypeTo",
 )
