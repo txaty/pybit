@@ -36,7 +36,7 @@ class HTTP(_V5HTTPManager):
             query=kwargs,
             auth=True,
         )
-        
+
     def query_instrument_info(self, **kwargs):
         return self._submit_request(
             method="GET",
@@ -44,7 +44,7 @@ class HTTP(_V5HTTPManager):
             query=kwargs,
             auth=True,
         )
-        
+
     def query_orderbook(self, **kwargs):
         return self._submit_request(
             method="GET",
@@ -52,7 +52,7 @@ class HTTP(_V5HTTPManager):
             query=kwargs,
             auth=True,
         )
-        
+
     def query_tickers(self, **kwargs):
         return self._submit_request(
             method="GET",
@@ -68,7 +68,7 @@ class HTTP(_V5HTTPManager):
             query=kwargs,
             auth=True,
         )
-        
+
     def query_public_trading_history(self, **kwargs):
         return self._submit_request(
             method="GET",
@@ -76,7 +76,7 @@ class HTTP(_V5HTTPManager):
             query=kwargs,
             auth=True,
         )
-        
+
     def query_open_interest(self, **kwargs):
         return self._submit_request(
             method="GET",
@@ -84,7 +84,7 @@ class HTTP(_V5HTTPManager):
             query=kwargs,
             auth=True,
         )
-        
+
     def query_historical_volatility(self, **kwargs):
         return self._submit_request(
             method="GET",
@@ -92,7 +92,7 @@ class HTTP(_V5HTTPManager):
             query=kwargs,
             auth=True,
         )
-        
+
     def query_risk_limit(self, **kwargs):
         return self._submit_request(
             method="GET",
@@ -100,7 +100,7 @@ class HTTP(_V5HTTPManager):
             query=kwargs,
             auth=True,
         )
-        
+
     def query_option_delivery_price(self, **kwargs):
         return self._submit_request(
             method="GET",
@@ -108,4 +108,3 @@ class HTTP(_V5HTTPManager):
             query=kwargs,
             auth=True,
         )
-        

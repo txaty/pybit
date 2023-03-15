@@ -1,4 +1,6 @@
-import unittest, time
+import time
+import unittest
+
 from pybit import HTTP, WebSocket
 
 session = HTTP("https://api.bybit.com")
@@ -14,7 +16,7 @@ class HTTPTest(unittest.TestCase):
     def test_query_kline(self):
         self.assertEqual(
             (
-                session.query_kline(
+                session._bybit_query_kline(
                     symbol="BTCUSD", interval="1", from_time=int(time.time()) - 60 * 60
                 )["ret_msg"]
             ),
