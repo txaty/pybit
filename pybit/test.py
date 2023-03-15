@@ -12,7 +12,6 @@ import threading
 
 class WebSocket:
     def __init__(self):
-
         self.data = {}
 
         websocket.enableTrace(True)

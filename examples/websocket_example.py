@@ -36,6 +36,7 @@ ws_inverse = inverse_perpetual.WebSocket(
     domain="bytick",  # the default is "bybit"
 )
 
+
 # Let's fetch the orderbook for BTCUSD. First, we'll define a function.
 def handle_orderbook(message):
     # I will be called every time there is new orderbook data!

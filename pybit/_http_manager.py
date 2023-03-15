@@ -211,7 +211,6 @@ class _HTTPManager:
         req_params = None
 
         while True:
-
             retries_attempted -= 1
             if retries_attempted < 0:
                 raise FailedRequestError(
@@ -355,7 +354,6 @@ class _HTTPManager:
 
             # If Bybit returns an error, raise.
             if s_json[ret_code]:
-
                 # Generate error message.
                 error_msg = f"{s_json[ret_msg]} (ErrCode: {s_json[ret_code]})"
 
@@ -364,7 +362,6 @@ class _HTTPManager:
 
                 # Retry non-fatal whitelisted error requests.
                 if s_json[ret_code] in self.retry_codes:
-
                     # 10002, recv_window error; add 2.5 seconds and retry.
                     if s_json[ret_code] == 10002:
                         error_msg += ". Added 2.5 seconds to recv_window"
@@ -822,7 +819,6 @@ class _V3HTTPManager:
         req_params = None
 
         while True:
-
             retries_attempted -= 1
             if retries_attempted < 0:
                 raise FailedRequestError(
@@ -937,7 +933,6 @@ class _V3HTTPManager:
 
             # If Bybit returns an error, raise.
             if s_json[ret_code]:
-
                 # Generate error message.
                 error_msg = f"{s_json[ret_msg]} (ErrCode: {s_json[ret_code]})"
 
@@ -946,7 +941,6 @@ class _V3HTTPManager:
 
                 # Retry non-fatal whitelisted error requests.
                 if s_json[ret_code] in self.retry_codes:
-
                     # 10002, recv_window error; add 2.5 seconds and retry.
                     if s_json[ret_code] == 10002:
                         error_msg += ". Added 2.5 seconds to recv_window"

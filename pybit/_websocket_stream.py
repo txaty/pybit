@@ -45,7 +45,6 @@ class _WebSocketManager:
         restart_on_error=True,
         trace_logging=False,
     ):
-
         self.testnet = testnet
         self.domain = domain
 
@@ -628,7 +627,6 @@ class _FuturesWebSocketManager(_WebSocketManager):
 
         # Make updates according to delta response.
         elif "delta" in message["type"]:
-
             # Delete.
             for entry in message["data"]["delete"]:
                 index = _helpers.find_index(self.data[topic], entry, "id")
@@ -806,7 +804,6 @@ class _USDCOptionsWebSocketManager(_USDCWebSocketManager):
 
         # Make updates according to delta response.
         elif "CHANGE" in message["data"]["dataType"]:
-
             # Delete.
             for entry in message["data"]["delete"]:
                 index = _helpers.find_index(self.data[topic], entry, "price")
