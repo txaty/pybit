@@ -21,9 +21,7 @@ class HTTP(_USDCHTTPManager):
 
         suffix = "/option/usdc/openapi/public/v1/order-book"
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs
+            method="GET", path=self.endpoint + suffix, query=kwargs
         )
 
     def query_symbol(self, **kwargs):
@@ -34,9 +32,7 @@ class HTTP(_USDCHTTPManager):
 
         suffix = "/option/usdc/openapi/public/v1/symbols"
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs
+            method="GET", path=self.endpoint + suffix, query=kwargs
         )
 
     def latest_information_for_symbol(self, **kwargs):
@@ -50,9 +46,7 @@ class HTTP(_USDCHTTPManager):
 
         suffix = "/option/usdc/openapi/public/v1/tick"
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs
+            method="GET", path=self.endpoint + suffix, query=kwargs
         )
 
     def delivery_price(self, **kwargs):
@@ -65,9 +59,7 @@ class HTTP(_USDCHTTPManager):
 
         suffix = "/option/usdc/openapi/public/v1/delivery-price"
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs
+            method="GET", path=self.endpoint + suffix, query=kwargs
         )
 
     def place_active_order(self, **kwargs):
@@ -83,10 +75,7 @@ class HTTP(_USDCHTTPManager):
         suffix = "/option/usdc/openapi/private/v1/place-order"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def batch_place_active_orders(self, orders: list):
@@ -104,10 +93,7 @@ class HTTP(_USDCHTTPManager):
         suffix = "/option/usdc/openapi/private/v1/batch-place-orders"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=query,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=query, auth=True
         )
 
     def cancel_active_order(self, **kwargs):
@@ -123,10 +109,7 @@ class HTTP(_USDCHTTPManager):
         suffix = "/option/usdc/openapi/private/v1/cancel-order"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def batch_cancel_active_order(self, orders: list):
@@ -143,10 +126,7 @@ class HTTP(_USDCHTTPManager):
         suffix = "/option/usdc/openapi/private/v1/batch-cancel-orders"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=query,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=query, auth=True
         )
 
     def cancel_all_active_orders(self, **kwargs):
@@ -162,10 +142,7 @@ class HTTP(_USDCHTTPManager):
         suffix = "/option/usdc/openapi/private/v1/cancel-all"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def replace_active_order(self, **kwargs):
@@ -180,10 +157,7 @@ class HTTP(_USDCHTTPManager):
         suffix = "/option/usdc/openapi/private/v1/replace-order"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def batch_replace_active_orders(self, orders: list):
@@ -201,10 +175,7 @@ class HTTP(_USDCHTTPManager):
         suffix = "/option/usdc/openapi/private/v1/batch-replace-orders"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=query,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=query, auth=True
         )
 
     def wallet_fund_records(self, **kwargs):
@@ -220,10 +191,7 @@ class HTTP(_USDCHTTPManager):
         suffix = "/option/usdc/openapi/private/v1/query-transaction-log"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def query_delivery_history(self, **kwargs):
@@ -237,10 +205,7 @@ class HTTP(_USDCHTTPManager):
         suffix = "/option/usdc/openapi/private/v1/query-delivery-list"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def query_position_expiration_date(self, **kwargs):
@@ -254,10 +219,7 @@ class HTTP(_USDCHTTPManager):
         suffix = "/option/usdc/openapi/private/v1/query-position-exp-date"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def modify_mmp(self, **kwargs):
@@ -271,10 +233,7 @@ class HTTP(_USDCHTTPManager):
         suffix = "/option/usdc/openapi/private/v1/mmp-modify"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def reset_mmp(self, **kwargs):
@@ -288,10 +247,7 @@ class HTTP(_USDCHTTPManager):
         suffix = "/option/usdc/openapi/private/v1/mmp-reset"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def query_mmp(self, **kwargs):
@@ -305,10 +261,7 @@ class HTTP(_USDCHTTPManager):
         suffix = "/option/usdc/openapi/private/v1/get-mmp-state"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
 
@@ -327,16 +280,14 @@ class WebSocket(_USDCOptionsWebSocketManager):
 
     def _ws_public_subscribe(self, topic, callback, symbol=None):
         if not self.ws_public:
-            self.ws_public = _USDCOptionsWebSocketManager(
-                ws_name, **self.public_kwargs)
+            self.ws_public = _USDCOptionsWebSocketManager(ws_name, **self.public_kwargs)
             self.ws_public._connect(PUBLIC_WSS)
             self.active_connections.append(self.ws_public)
         self.ws_public.subscribe(topic, callback, symbol)
 
     def _ws_private_subscribe(self, topic, callback):
         if not self.ws_private:
-            self.ws_private = _USDCOptionsWebSocketManager(
-                ws_name, **self.kwargs)
+            self.ws_private = _USDCOptionsWebSocketManager(ws_name, **self.kwargs)
             self.ws_private._connect(PRIVATE_WSS)
             self.active_connections.append(self.ws_private)
         self.ws_private.subscribe(topic, callback)
@@ -346,8 +297,9 @@ class WebSocket(_USDCOptionsWebSocketManager):
             wss_url,
             {
                 PUBLIC_WSS: self._ws_public_subscribe,
-                PRIVATE_WSS: self._ws_private_subscribe
-            })
+                PRIVATE_WSS: self._ws_private_subscribe,
+            },
+        )
         symbol = self._extract_symbol(topic)
         if symbol:
             subscribe(topic, callback, symbol)

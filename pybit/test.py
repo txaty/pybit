@@ -1,4 +1,5 @@
 import websocket
+
 try:
     import thread
 except ImportError:
@@ -10,7 +11,6 @@ import threading
 
 
 class WebSocket:
-
     def __init__(self):
 
         self.data = {}
@@ -24,23 +24,29 @@ class WebSocket:
             on_close=self._on_close(self.ws),
         )
         # Setup the thread running WebSocketApp.
-        self.wst = threading.Thread(target=lambda: self.ws.run_forever(
-            sslopt={"cert_reqs": ssl.CERT_NONE},
-        ))
+        self.wst = threading.Thread(
+            target=lambda: self.ws.run_forever(
+                sslopt={"cert_reqs": ssl.CERT_NONE},
+            )
+        )
 
         # Configure as daemon; start.
         self.wst.daemon = True
         self.wst.start()
 
     def orderbook(self):
-        return self.data.get('orderBook_200.100ms.BTCUSD')
+        return self.data.get("orderBook_200.100ms.BTCUSD")
 
     @staticmethod
     def _on_message(self, message):
         m = json.loads(message)
-        if 'topic' in m and m.get('topic') == 'orderBook_200.100ms.BTCUSD' and m.get('type') == 'snapshot':
-            print('Hi!')
-            self.data[m.get('topic')] = m.get('data')
+        if (
+            "topic" in m
+            and m.get("topic") == "orderBook_200.100ms.BTCUSD"
+            and m.get("type") == "snapshot"
+        ):
+            print("Hi!")
+            self.data[m.get("topic")] = m.get("data")
 
     @staticmethod
     def _on_error(self, error):
@@ -52,14 +58,11 @@ class WebSocket:
 
     @staticmethod
     def _on_open(ws):
-        print('Submitting subscriptions...')
-        ws.send(json.dumps({
-            'op': 'subscribe',
-            'args': ['orderBook_200.100ms.BTCUSD']
-        }))
+        print("Submitting subscriptions...")
+        ws.send(json.dumps({"op": "subscribe", "args": ["orderBook_200.100ms.BTCUSD"]}))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     session = WebSocket()
 
     time.sleep(5)

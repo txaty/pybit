@@ -26,9 +26,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/public/mark-price-kline"
 
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs
+            method="GET", path=self.endpoint + suffix, query=kwargs
         )
 
     def query_index_price_kline(self, **kwargs):
@@ -48,9 +46,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/public/index-price-kline"
 
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs
+            method="GET", path=self.endpoint + suffix, query=kwargs
         )
 
     def query_premium_index_kline(self, **kwargs):
@@ -71,9 +67,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/public/premium-index-kline"
 
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs
+            method="GET", path=self.endpoint + suffix, query=kwargs
         )
 
     def place_active_order(self, **kwargs):
@@ -89,10 +83,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/order/create"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def get_active_order(self, **kwargs):
@@ -108,10 +99,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/order/list"
 
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def cancel_active_order(self, **kwargs):
@@ -127,10 +115,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/order/cancel"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def cancel_all_active_orders(self, **kwargs):
@@ -146,10 +131,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/order/cancelAll"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def replace_active_order(self, **kwargs):
@@ -164,10 +146,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/order/replace"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def query_active_order(self, **kwargs):
@@ -182,10 +161,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/order"
 
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def place_conditional_order(self, **kwargs):
@@ -201,10 +177,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/stop-order/create"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def get_conditional_order(self, **kwargs):
@@ -220,10 +193,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/stop-order/list"
 
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def cancel_conditional_order(self, **kwargs):
@@ -239,10 +209,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/stop-order/cancel"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def cancel_all_conditional_orders(self, **kwargs):
@@ -258,10 +225,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/stop-order/cancelAll"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def replace_conditional_order(self, **kwargs):
@@ -276,10 +240,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/stop-order/replace"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def query_conditional_order(self, **kwargs):
@@ -294,10 +255,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/stop-order"
 
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def my_position(self, **kwargs):
@@ -312,10 +270,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/position/list"
 
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def set_leverage(self, **kwargs):
@@ -332,10 +287,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/position/leverage/save"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def cross_isolated_margin_switch(self, **kwargs):
@@ -351,10 +303,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/position/switch-isolated"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def full_partial_position_tp_sl_switch(self, **kwargs):
@@ -368,10 +317,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/tpsl/switch-mode"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def change_margin(self, **kwargs):
@@ -386,10 +332,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/position/change-position-margin"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def set_trading_stop(self, **kwargs):
@@ -404,10 +347,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/position/trading-stop"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def user_trade_records(self, **kwargs):
@@ -423,10 +363,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/execution/list"
 
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def closed_profit_and_loss(self, **kwargs):
@@ -442,10 +379,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/trade/closed-pnl/list"
 
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def set_risk_limit(self, **kwargs):
@@ -460,10 +394,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/position/risk-limit"
 
         return self._submit_request(
-            method="POST",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="POST", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def get_the_last_funding_rate(self, **kwargs):
@@ -480,9 +411,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/public/funding/prev-funding-rate"
 
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs
+            method="GET", path=self.endpoint + suffix, query=kwargs
         )
 
     def my_last_funding_fee(self, **kwargs):
@@ -501,10 +430,7 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/funding/prev-funding"
 
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
     def predicted_funding_rate(self, **kwargs):
@@ -519,17 +445,14 @@ class HTTP(_InverseFuturesHTTPManager):
         suffix = "/v2/private/funding/predicted-funding"
 
         return self._submit_request(
-            method="GET",
-            path=self.endpoint + suffix,
-            query=kwargs,
-            auth=True
+            method="GET", path=self.endpoint + suffix, query=kwargs, auth=True
         )
 
-    '''
+    """
     Additional Methods
     These methods use two or more requests to perform a specific
     function and are exclusive to pybit.
-    '''
+    """
 
     def close_position(self, symbol):
         """
@@ -560,8 +483,10 @@ class HTTP(_InverseFuturesHTTPManager):
                 "qty": p["size"],
                 "time_in_force": "ImmediateOrCancel",
                 "reduce_only": True,
-                "close_on_trigger": True
-            } for p in (r if isinstance(r, list) else [r]) if p["size"] > 0
+                "close_on_trigger": True,
+            }
+            for p in (r if isinstance(r, list) else [r])
+            if p["size"] > 0
         ]
 
         if len(orders) == 0:
@@ -584,10 +509,7 @@ class HTTP(_InverseFuturesHTTPManager):
 
         with ThreadPoolExecutor(max_workers=max_in_parallel) as executor:
             executions = [
-                executor.submit(
-                    self.place_active_order,
-                    **order
-                ) for order in orders
+                executor.submit(self.place_active_order, **order) for order in orders
             ]
         executor.shutdown()
         return [execution.result() for execution in executions]
@@ -606,10 +528,7 @@ class HTTP(_InverseFuturesHTTPManager):
 
         with ThreadPoolExecutor(max_workers=max_in_parallel) as executor:
             executions = [
-                executor.submit(
-                    self.cancel_active_order,
-                    **order
-                ) for order in orders
+                executor.submit(self.cancel_active_order, **order) for order in orders
             ]
         executor.shutdown()
         return [execution.result() for execution in executions]
@@ -628,10 +547,7 @@ class HTTP(_InverseFuturesHTTPManager):
 
         with ThreadPoolExecutor(max_workers=max_in_parallel) as executor:
             executions = [
-                executor.submit(
-                    self.replace_active_order,
-                    **order
-                ) for order in orders
+                executor.submit(self.replace_active_order, **order) for order in orders
             ]
         executor.shutdown()
         return [execution.result() for execution in executions]
@@ -650,10 +566,8 @@ class HTTP(_InverseFuturesHTTPManager):
 
         with ThreadPoolExecutor(max_workers=max_in_parallel) as executor:
             executions = [
-                executor.submit(
-                    self.place_conditional_order,
-                    **order
-                ) for order in orders
+                executor.submit(self.place_conditional_order, **order)
+                for order in orders
             ]
         executor.shutdown()
         return [execution.result() for execution in executions]
@@ -672,10 +586,8 @@ class HTTP(_InverseFuturesHTTPManager):
 
         with ThreadPoolExecutor(max_workers=max_in_parallel) as executor:
             executions = [
-                executor.submit(
-                    self.cancel_conditional_order,
-                    **order
-                ) for order in orders
+                executor.submit(self.cancel_conditional_order, **order)
+                for order in orders
             ]
         executor.shutdown()
         return [execution.result() for execution in executions]
@@ -694,10 +606,8 @@ class HTTP(_InverseFuturesHTTPManager):
 
         with ThreadPoolExecutor(max_workers=max_in_parallel) as executor:
             executions = [
-                executor.submit(
-                    self.replace_conditional_order,
-                    **order
-                ) for order in orders
+                executor.submit(self.replace_conditional_order, **order)
+                for order in orders
             ]
         executor.shutdown()
         return [execution.result() for execution in executions]

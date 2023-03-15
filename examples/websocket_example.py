@@ -19,8 +19,12 @@ from pybit.inverse_perpetual import WebSocket, HTTP
 
 # Set up logging (optional)
 import logging
-logging.basicConfig(filename="pybit.log", level=logging.DEBUG,
-                    format="%(asctime)s %(levelname)s %(message)s")
+
+logging.basicConfig(
+    filename="pybit.log",
+    level=logging.DEBUG,
+    format="%(asctime)s %(levelname)s %(message)s",
+)
 
 
 # Connect with authentication!
@@ -29,7 +33,7 @@ ws_inverse = inverse_perpetual.WebSocket(
     api_key="...",  # omit the api_key & secret to connect w/o authentication
     api_secret="...",
     # to pass a custom domain in case of connectivity problems, you can use:
-    domain="bytick"  # the default is "bybit"
+    domain="bytick",  # the default is "bybit"
 )
 
 # Let's fetch the orderbook for BTCUSD. First, we'll define a function.
@@ -37,6 +41,7 @@ def handle_orderbook(message):
     # I will be called every time there is new orderbook data!
     print(message)
     orderbook_data = message["data"]
+
 
 # Now, we can subscribe to the orderbook stream and pass our arguments:
 # our function and our selected symbol.
@@ -49,6 +54,7 @@ ws_inverse.orderbook_25_stream(handle_orderbook, "BTCUSD")
 def handle_position(message):
     # I will be called every time there is new position data!
     print(message)
+
 
 ws_inverse.position_stream(handle_position)
 
